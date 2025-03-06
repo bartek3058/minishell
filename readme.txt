@@ -1,4 +1,0 @@
-first
-second
-tomek
-third
