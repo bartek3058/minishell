@@ -7,6 +7,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
+#include <signal.h>
 
 // struktura reprezentujaca token z parsera
 
@@ -55,5 +56,8 @@ void	ft_exit(void);
 void	ft_builtins(char *input);
 void	ft_pwd(void);
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
+char	*ft_strchr(const char *s, int c);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strdup(const char *s);
 
 #endif
