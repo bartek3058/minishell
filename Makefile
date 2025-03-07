@@ -4,9 +4,12 @@ CC		=	cc
 
 CFLAGS	=	-g -Wall -Wextra -Werror
 
+READLINE = -lreadline
+
 INCLUDE	=	./includes
 
-SRCS	=	./sources/minishell.c
+SRCS	=	./sources/minishell.c \
+						./sources/builtins/builtins.c
 				
 OBJS	=	${SRCS:.c=.o}
 
@@ -20,7 +23,7 @@ ${LIBFT}:
 all:		${NAME}
 
 ${NAME}:	$(OBJS) $(LIBFT)
-			$(CC) $(CFLAGS) -o $(NAME) $(OBJS) $(LIBFT)
+			$(CC) $(CFLAGS) $(READLINE) -o $(NAME) $(OBJS) $(LIBFT)
 
 %.o:	%.c
 		$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@
