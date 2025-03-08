@@ -1,30 +1,28 @@
 #include "../../includes/minishell.h"
 
-void	ft_echo(char *input)
+int	ft_echo(char **args)
 {
 	int i;
-
-	i = 0;
+	int n_flag;
 	
-	if (input[5] == '-' && input[6] == 'n' && input[7] == ' ')
+	i = 1;
+	n_flag = 0;
+	
+	if (args[i] && ft_strcmp(args[i], "-n") == 0)
 	{
-		i = 8;
-		while (input[i] != '\0')
-		{
-			write(1, &input[i], 1);
-			i++;
-		}
+		n_flag = 1;
+		i++;
 	}
-	else
+	while (args[i])
 	{
-		i = 5;
-		while (input[i] != '\0')
-		{
-			write(1, &input[i], 1);
-			i++;
-		}
+		ft_putstr_fd(args[i], 1);
+		if (args[i + 1]) // jesli jest nastepny argument dodaj spacje
+			write(1, " ", 1);
+		i++;
+	}
+	if(!n_flag) // jesli nie ma flagi -n dodaj nowa linie
 		write(1, "\n", 1);
-	}
+	return (0); // zwroc 0 jako kod wyjscia (sukces)
 }
 
 void	ft_exit()
@@ -42,12 +40,12 @@ void	ft_pwd()
 		perror("getcwd() error");
 }
 
-void	ft_builtins(char *input)
+void	ft_builtins(t_minishell shell, char **args)
 {
-	if (input && (ft_strncmp(input, "pwd", 3) == 0))
+	if (shell.line && (ft_strcmp(shell.line, "pwd") == 0))
 		ft_pwd();
-	else if (input && (ft_strncmp(input, "exit", 4) == 0))
+	else if (shell.line && (ft_strcmp(shell.line, "exit") == 0))
 		ft_exit();
-	else if (input && (ft_strncmp(input, "echo ", 5) == 0))
-		ft_echo(input);
+	else if (shell.line && (ft_strcmp(shell.line, "echo") == 0))
+		shell.exit_status = ft_echo(args);
 }

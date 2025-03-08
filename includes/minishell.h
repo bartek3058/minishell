@@ -50,14 +50,26 @@ typedef struct s_minishell
 
 
 
-int main(void);
-void	minishell_loop(char *input);
+int	main(int argc, char **argv, char **envp);
+void	minishell_loop(t_minishell *shell, char **args);
 void	ft_exit(void);
-void	ft_builtins(char *input);
+void	ft_builtins(t_minishell shell, char **args);
 void	ft_pwd(void);
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strchr(const char *s, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strdup(const char *s);
+int	update_existing_env(t_env *env_list, char *key, char *value);
+void	add_env(t_env **env_list, char *key, char *value);
+void	handle_sigint(int sig);
+void	setup_signals(void);
+void	init_minishell(t_minishell *shell, char **envp);
+int	ft_echo(char **args);
+int	ft_strcmp(const char *s1, const char *s2);
+void	free_args(char **args);
+void	minishell_loop_helper(t_minishell *shell, char **args);
+char	**ft_split(char const *s, char c);
+void	ft_putstr_fd(char *s, int fd);
+
 
 #endif

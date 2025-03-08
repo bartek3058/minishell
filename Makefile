@@ -8,8 +8,11 @@ READLINE = -lreadline
 
 INCLUDE	=	./includes
 
-SRCS	=	./sources/minishell.c \
-						./sources/builtins/builtins.c
+SRCS	=	./sources/minishell.c\
+					./sources/builtins/builtins.c\
+					./sources/utils/utils.c\
+					./sources/init.c\
+					./sources/free.c
 				
 OBJS	=	${SRCS:.c=.o}
 

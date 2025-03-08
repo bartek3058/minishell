@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	udpate_existing_env(t_env *env_list, char *key, char *value)
+int	update_existing_env(t_env *env_list, char *key, char *value)
 {
 	t_env *current;
 
@@ -24,7 +24,7 @@ void add_env(t_env **env_list, char *key, char *value)
 	t_env *new_env;
 	t_env *current;
 
-	// sprawdzam czy zmienna juz istnieje jest tak aktualizuje ja
+	// sprawdzam czy zmienna juz istnieje jesli tak aktualizuje ja
 	if (*env_list && update_existing_env(*env_list, key, value))
 		return ;
 	// tworzymy i alokujemy pamiec na nowy element
@@ -54,8 +54,7 @@ void handle_sigint(int sig)
 	//resetowanie readline dla nowego prompta - to gotowe funkcje z tabelki
 	rl_on_new_line(); // informuje, ze kursor znajduje sie na nowej linii
 	rl_replace_line("", 0); // zastepuje aktualna linie pustym ciagiem znakow
-	rl_readisplay(); //wymusza odswiezenie wyswietlanego tekstu
-	
+	rl_redisplay(); //wymusza odswiezenie wyswietlanego tekstu
 }
 
 void	setup_signals(void)
