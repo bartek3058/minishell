@@ -20,13 +20,13 @@ LIBPATH	=	libft/
 
 LIBFT = $(LIBPATH)libft.a
 
+all:		${LIBFT} ${NAME}
+
 ${LIBFT}:
 			make -C ${LIBPATH}
 
-all:		${NAME}
-
 ${NAME}:	$(OBJS) $(LIBFT)
-			$(CC) $(CFLAGS) $(READLINE) -o $(NAME) $(OBJS) $(LIBFT)
+			$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -o $(NAME) $(READLINE) 
 
 %.o:	%.c
 		$(CC) $(CFLAGS) -I$(INCLUDE) -c $< -o $@
