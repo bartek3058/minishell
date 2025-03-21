@@ -35,7 +35,7 @@ void add_env(t_env **env_list, char *key, char *value)
 	new_env->key = ft_strdup(key);
 	new_env->value = ft_strdup(value);
 	new_env->next = NULL;
-	if (*env_list == NULL)
+	if (*env_list == NULL) // jesli lista jest pusta new_env stanie sie pierwszym elementem
 	{
 		*env_list = new_env;
 		return ;
@@ -63,7 +63,7 @@ void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN); // ignorowanie Ctrl+\ (SIGQUIT)
 }
 
-void	init_minishell(t_minishell *shell, char **envp)
+void	init_minishell(t_minishell *shell, char **envp, t_token *token)
 {
 	int i;
 	char *key;
@@ -75,6 +75,7 @@ void	init_minishell(t_minishell *shell, char **envp)
 	shell->exit_status = 0;
 	shell->running = 1;
 	shell->line = NULL;
+	init_token(&token);
 	// inicjalizacja listy zmiennych srodowiskowych
 	i = 0;
 	while (envp[i])

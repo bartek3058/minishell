@@ -40,12 +40,14 @@ void	ft_pwd()
 		perror("getcwd() error");
 }
 
-void	ft_builtins(t_minishell shell, char **args)
+void	ft_builtins(t_minishell *shell, char **args)
 {
-	if (shell.line && (ft_strcmp(shell.line, "pwd") == 0))
+	if (shell->line && (ft_strcmp(shell->line, "pwd") == 0))
 		ft_pwd();
-	else if (shell.line && (ft_strcmp(shell.line, "exit") == 0))
+	else if (shell->line && (ft_strcmp(shell->line, "exit") == 0))
 		ft_exit();
-	else if (shell.line && (ft_strcmp(shell.line, "echo") == 0))
-		shell.exit_status = ft_echo(args);
+	else if (shell->line && (ft_strncmp(shell->line, "echo", 4) == 0))
+		shell->exit_status = ft_echo(args);
+	else if (shell->line && (ft_strncmp(shell->line, "cd", 2)))
+		return ;
 }
