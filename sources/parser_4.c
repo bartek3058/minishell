@@ -25,7 +25,7 @@ void	parser_cd(t_token **head, char *args)
 		return ;
 	if(check_path(args[1] == 1))
 	{
-	new_token->type = "redirect_double_input";
+	new_token->type = "cd";
 	new_token->value = args[1];
 	new_token->next = NULL;
 	}
