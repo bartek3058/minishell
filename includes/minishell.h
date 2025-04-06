@@ -72,7 +72,9 @@ void	minishell_loop_helper(t_minishell *shell, char **args);
 char	**ft_split(char const *s, char c);
 void	ft_putstr_fd(char *s, int fd);
 
+//utils_t
 char	*check_path(char *cmd);
+void	execute_cmd(char *path, char **args);
 
 
 
