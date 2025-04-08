@@ -12,7 +12,7 @@ char	*check_path(char *cmd)
 	i = 0;
 	while (paths[i])
 	{
-		full_path = ft_strjoin(paths[i], '/');
+		full_path = ft_strjoin(paths[i], "/");
 		full_path = ft_strjoin(full_path, cmd);
 		if (access(full_path, X_OK) == 0)
 			return full_path;

@@ -40,6 +40,22 @@ void	ft_pwd()
 		perror("getcwd() error");
 }
 
+int	ft_cd(char **args) {
+	if (!args[1]) {
+		fprintf(stderr, "minishell: cd: missing argument\n");
+		return 1;
+	}
+	if (chdir(args[1]) != 0) {
+		perror("cd() error");
+		return 1;
+	}
+	else {
+		chdir(args[1]);
+		return 0;
+	}
+}
+
+
 void	ft_builtins(t_minishell shell, char **args)
 {
 	if (shell.line && (ft_strcmp(shell.line, "pwd") == 0))
@@ -48,4 +64,6 @@ void	ft_builtins(t_minishell shell, char **args)
 		ft_exit();
 	else if (shell.line && (ft_strcmp(shell.line, "echo") == 0))
 		shell.exit_status = ft_echo(args);
+	else if (shell.line && (ft_strcmp(shell.line, "cd") == 0))
+		shell.exit_status = ft_cd(args);
 }

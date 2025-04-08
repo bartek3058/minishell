@@ -11,6 +11,7 @@ INCLUDE	=	./includes
 SRCS	=	./sources/minishell.c\
 					./sources/builtins/builtins.c\
 					./sources/utils/utils.c\
+					./sources/utils/utils_t.c\
 					./sources/init.c\
 					./sources/free.c
 				

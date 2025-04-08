@@ -71,6 +71,10 @@ void	free_args(char **args);
 void	minishell_loop_helper(t_minishell *shell, char **args);
 char	**ft_split(char const *s, char c);
 void	ft_putstr_fd(char *s, int fd);
+char	*ft_strjoin(char const *s1, char const *s2);
+
+//built-ins
+int		ft_cd(char **args);
 
 //utils_t
 char	*check_path(char *cmd);
