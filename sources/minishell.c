@@ -8,7 +8,7 @@ void	minishell_loop_helper(t_minishell *shell, char **args)
 		args = ft_split(shell->line, ' '); // dzielenie linii na argumenty
 		if (!args)
 			free(shell->line);
-		ft_builtins(*shell, args); // obsluga builtins (pwd, echo, ...)
+		ft_builtins(shell, args); // obsluga builtins (pwd, echo, ...)
 		free_args(args);
 		free(shell->line);
 }

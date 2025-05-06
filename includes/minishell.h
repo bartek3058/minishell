@@ -54,7 +54,7 @@ typedef struct s_minishell
 int	main(int argc, char **argv, char **envp);
 void	minishell_loop(t_minishell *shell, char **args);
 void	ft_exit(void);
-void	ft_builtins(t_minishell shell, char **args);
+void	ft_builtins(t_minishell *shell, char **args);
 void	ft_pwd(void);
 int	ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strchr(const char *s, int c);
