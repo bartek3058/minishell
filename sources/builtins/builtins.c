@@ -25,9 +25,11 @@ int	ft_echo(char **args)
 	return (0); // zwroc 0 jako kod wyjscia (sukces)
 }
 
-void	ft_exit()
+void	ft_exit(t_minishell *shell)
 {
-	exit(0);
+	free_env(shell->env_list); // zwalniamy pamiec dla zmiennych srodowiskowych
+	shell->env_list = NULL; // ustawiamy wskaznik na NULL, zapobiega double free
+	exit(shell->exit_status); // zwraca status wyjscia
 }
 
 void	ft_pwd()
@@ -63,7 +65,10 @@ void	ft_builtins(t_minishell *shell, char **args)
 	if (ft_strcmp(args[0], "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(args[0], "exit") == 0)
-		ft_exit();
+	{
+		ft_exit(shell);
+		shell->running = 0; // ustawienie flagi do zakonczenia petli
+	}
 	else if (ft_strcmp(args[0], "echo") == 0)
 		shell->exit_status = ft_echo(args); // pass args after "echo"
 	else if (ft_strcmp(args[0], "cd") == 0)

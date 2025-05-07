@@ -85,6 +85,8 @@ void	init_minishell(t_minishell *shell, char **envp)
 			key = ft_substr(envp[i], 0, eq_pos - envp[i]); // wydziel klucz (czesc przed '=')
 			value = ft_strdup(eq_pos + 1); // wydziel wartosc (czesc po '=')
 			add_env(&(shell->env_list), key, value); // dodaj zmienna do listy
+			free(key); // zwolnij pamiec po kluczu
+			free(value); // zwolnij pamiec po wartosci
 		}
 		i++;
 	}
