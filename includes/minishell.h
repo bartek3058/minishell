@@ -59,7 +59,7 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strdup(const char *s);
 int		update_existing_env(t_env *env_list, char *key, char *value);
-void	add_env(t_env **env_list, char *key, char *value);
+int		add_env(t_env **env_list, char *key, char *value);
 void	handle_sigint(int sig);
 void	setup_signals(void);
 void	init_minishell(t_minishell *shell, char **envp);
@@ -76,6 +76,8 @@ int		ft_cd(char **args);
 int		ft_echo(char **args);
 void	ft_exit(t_minishell *shell);
 void	ft_pwd(void);
+int		ft_env(t_env *env);
+int		ft_unset(t_env **env_list, char *key);
 
 
 //utils_t
@@ -86,5 +88,6 @@ char    **conv_env_to_array(t_env *env);
 //clean-up
 void	free_args(char **args);
 void	free_env(t_env *env);
+void	free_env_node(t_env *node);
 
 #endif

@@ -73,4 +73,15 @@ void	ft_builtins(t_minishell *shell, char **args)
 		shell->exit_status = ft_echo(args); // pass args after "echo"
 	else if (ft_strcmp(args[0], "cd") == 0)
 		shell->exit_status = ft_cd(args); // pass args after "cd"
+	else if (ft_strcmp(args[0], "env") == 0)
+		shell->exit_status = ft_env(shell->env_list);
+	else if (ft_strcmp(args[0], "export") == 0)
+		shell->exit_status = add_env(&(shell->env_list), args[1], args[2]); // pass key and value
+	else if (ft_strcmp(args[0], "unset") == 0)
+		shell->exit_status = ft_unset(&(shell->env_list), args[1]); // pass key
+	else
+	{
+		fprintf(stderr, "minishell: %s: command not found\n", args[0]);
+		shell->exit_status = 127; // command not found
+	}
 }

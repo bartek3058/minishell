@@ -19,18 +19,18 @@ int	update_existing_env(t_env *env_list, char *key, char *value)
 	return (0); // nie znaleziono
 }
 
-void add_env(t_env **env_list, char *key, char *value)
+int add_env(t_env **env_list, char *key, char *value)
 {
 	t_env *new_env;
 	t_env *current;
 
 	// sprawdzam czy zmienna juz istnieje jesli tak aktualizuje ja
 	if (*env_list && update_existing_env(*env_list, key, value))
-		return ;
+		return (0);
 	// tworzymy i alokujemy pamiec na nowy element
 	new_env = (t_env *)malloc(sizeof(t_env));
 	if (!new_env)
-		return ;
+		return (0);
 	// kopiujemy klucz i jego wartosc
 	new_env->key = ft_strdup(key);
 	new_env->value = ft_strdup(value);
@@ -38,13 +38,14 @@ void add_env(t_env **env_list, char *key, char *value)
 	if (*env_list == NULL)
 	{
 		*env_list = new_env;
-		return ;
+		return (0);
 	}
 	// dodajemy nowy element na koniec listy
 	current = *env_list;
 	while (current->next)
 		current = current->next;
 	current->next = new_env;
+	return (0);
 }
 
 

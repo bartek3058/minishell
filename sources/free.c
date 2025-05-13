@@ -31,3 +31,13 @@ void	free_env(t_env *env)
 	}
 	env = NULL;
 }
+
+void	free_env_node(t_env *node)
+{
+	if (node)
+	{
+		free(node->key);
+		free(node->value);
+		free(node);
+	}
+}
