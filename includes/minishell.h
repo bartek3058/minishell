@@ -81,13 +81,14 @@ int		ft_unset(t_env **env_list, char *key);
 
 
 //utils_t
-void	execute_cmd(char *path, char **args);
-char	*check_path(char *cmd);
-char    **conv_env_to_array(t_env *env);
+void	execute_cmd(char *path, char **args); 	// wykonuje polecenie
+char	*check_path(char *cmd);			// sprawdza sciezke do polecenia
+char	**conv_env_to_array(t_env *env); // konwersja listy zmiennych srodowiskowych na tablice
+char	**tokens_to_args(t_token *token); // konwersja listy tokenow na tablice argumentow
 
 //clean-up
-void	free_args(char **args);
-void	free_env(t_env *env);
-void	free_env_node(t_env *node);
+void	free_args(char **args);   // zwalnia pamiec po tablicy argumentow
+void	free_env(t_env *env);     // zwalnia pamiec po zmiennych srodowiskowych
+void	free_env_node(t_env *node); // zwalnia pamiec po pojedynczej zmiennej srodowiskowej (dla unset)
 
 #endif
