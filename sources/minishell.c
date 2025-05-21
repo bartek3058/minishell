@@ -29,6 +29,8 @@ void	minishell_loop(t_minishell *shell, char **args, t_token *token)
 		}
 		minishell_loop_helper(shell, args, &token);
 	}
+	free_env(shell->env_list);
+	shell->env_list = NULL;
 }
 
 int main(int argc, char **argv, char **envp)

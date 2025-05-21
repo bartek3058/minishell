@@ -70,15 +70,13 @@ void	init_minishell(t_minishell *shell, char **envp, t_token *token)
 	char *key;
 	char *value;
 	char *eq_pos;
-	// inicjalizacja podstawowych pol struktury
-	shell->env_list = NULL;
+	shell->env_list = NULL; // inicjalizacja podstawowych pol struktury
 	shell->commands = NULL;
 	shell->exit_status = 0;
 	shell->running = 1;
 	shell->line = NULL;
-	init_token(token);
-	// inicjalizacja listy zmiennych srodowiskowych
-	i = 0;
+	init_token(token); 
+	i = 0; // inicjalizacja listy zmiennych srodowiskowych
 	while (envp[i])
 	{
 		eq_pos = ft_strchr(envp[i], '=');
@@ -87,6 +85,8 @@ void	init_minishell(t_minishell *shell, char **envp, t_token *token)
 			key = ft_substr(envp[i], 0, eq_pos - envp[i]); // wydziel klucz (czesc przed '=')
 			value = ft_strdup(eq_pos + 1); // wydziel wartosc (czesc po '=')
 			add_env(&(shell->env_list), key, value); // dodaj zmienna do listy
+			free(key);
+			free(value);
 		}
 		i++;
 	}
