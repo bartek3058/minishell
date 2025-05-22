@@ -9,7 +9,9 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 #include <../libft/libft.h>
+
 
 // struktura reprezentujaca token z parsera
 
@@ -80,11 +82,23 @@ void	ft_pwd(void);
 int		ft_env(t_env *env);
 int		ft_unset(t_env **env_list, char *key);
 
+//redirections
+void	ft_input_redirection(t_command *cmd);
+void	ft_output_redirection(t_command *cmd);
+void	ft_append_redirection(t_command *cmd);
+void	ft_heredoc_redirection(t_command *cmd);
+
+//pipes
+void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2); // wykonuje polecenia w potoku
 
 //utils_t
-void	execute_cmd(char *path, char **args);
-char	*check_path(char *cmd);
-char    **conv_env_to_array(t_env *env);
+int		execute_cmd(char *path, char **args); 	// wykonuje polecenie
+int		execute_command(t_minishell *shell, t_command *cmd); // sprawdza czy polecenie jest wbudowane i je wykonuje
+char	*check_path(char *cmd);			// sprawdza sciezke do polecenia
+
+//utils_t_2
+char	**conv_env_to_array(t_env *env); // konwersja listy zmiennych srodowiskowych na tablice
+char	**tokens_to_args(t_token *token); // konwersja listy tokenow na tablice argumentow
 
 
 //utils
@@ -95,9 +109,26 @@ void	parser_helper(t_token **token, char **args, int *i);
 int is_redirect_or_pipe(char *arg);
 
 //clean-up
-void	free_args(char **args);
-void	free_env(t_env *env);
-void	free_env_node(t_env *node);
+void	free_args(char **args);   // zwalnia pamiec po tablicy argumentow
+void	free_env(t_env *env);     // zwalnia pamiec po zmiennych srodowiskowych
+void	free_env_node(t_env *node); // zwalnia pamiec po pojedynczej zmiennej srodowiskowej (dla unset)
+
+//tests
+void ft_test_command_handler(t_minishell *shell, int *test_nr);
+void ft_test_basic_command(void);
+void ft_test_input_redirection(void);
+void ft_test_output_redirection(void);
+void ft_test_append_redirection(void);
+void ft_test_heredoc(void);
+void ft_test_pipe(t_minishell *shell);
+void ft_test_echo(void);
+void ft_test_cd(void);
+void ft_test_pwd(void);
+void ft_test_export(t_minishell *shell);
+void ft_test_unset(t_minishell *shell);
+void ft_test_env(t_minishell *shell);
+void ft_test_exit(t_minishell *shell);
+
 
 //parser
 void    parser(char **args, t_token **token);
