@@ -13,8 +13,12 @@ SRCS	=	./sources/minishell.c\
 					./sources/builtins/builtins_2.c\
 					./sources/utils/utils.c\
 					./sources/utils/utils_t.c\
+					./sources/utils/utils_t_2.c\
+					./sources/redirections.c\
+					./sources/pipes.c\
+					./sources/free.c\
 					./sources/init.c\
-					./sources/free.c
+					./tests/tests_handler.c
 				
 OBJS	=	${SRCS:.c=.o}
 

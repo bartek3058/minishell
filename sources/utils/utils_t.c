@@ -21,7 +21,27 @@ char	*check_path(char *cmd)
 	}
 	return(0);
 }
-void	execute_cmd(char *path, char **args)
+static int	is_builtin(char *cmd)
+{
+    if (!cmd)
+        return 0;
+    if (ft_strcmp(cmd, "echo") == 0)
+        return 1;
+    if (ft_strcmp(cmd, "cd") == 0)
+        return 1;
+    if (ft_strcmp(cmd, "pwd") == 0)
+        return 1;
+    if (ft_strcmp(cmd, "export") == 0)
+        return 1;
+    if (ft_strcmp(cmd, "unset") == 0)
+        return 1;
+    if (ft_strcmp(cmd, "env") == 0)
+        return 1;
+    if (ft_strcmp(cmd, "exit") == 0)
+        return 1;
+    return 0;
+}
+int	execute_cmd(char *path, char **args)
 {
 	pid_t	pid;
 	int		status;
@@ -38,82 +58,36 @@ void	execute_cmd(char *path, char **args)
 	else if (pid > 0)
 	{
 		waitpid(pid, &status, WUNTRACED);
+		if (WIFEXITED(status))
+			return WEXITSTATUS(status);  // Return the exit status
 	}
 	else
 	{
 		perror("fork erorr");
 		exit(EXIT_FAILURE);
 	}
+	return(0);
 }
-static	int	ft_envsize(t_env *env)
+int	execute_command(t_minishell *shell, t_command *cmd)
 {
-	int size;
-	t_env *current;
-
-	size = 0;
-	current = env;
-	while (current)
-	{
-		size++;
-		current = current->next;
-	}
-	return (size);
-}
-
-char	**conv_env_to_array(t_env *env)
-{
-    char    **arr;
-    int     count;
-    t_env   *current;
-    int     i;
-
-    count = ft_envsize(env);
-    arr = (char **)malloc((count + 1) * sizeof(char *));
-    if (!arr)
-        return (NULL);
-    current = env;
-    i = 0;
-    while (current)
+    // Check if command is a builtin
+    if (is_builtin(cmd->args[0]))
     {
-        arr[i] = ft_strjoin(current->key, "=");
-		arr[i] = ft_strjoin(arr[i], current->value);
-        if (!arr[i])
-		{
-            free_args(arr);
-			return (0); 
-		}
-        current = current->next;
-        i++;
+        // Execute builtin in current process
+        ft_builtins(shell, cmd->args);
+		return (0);
     }
-    arr[i] = NULL;
-    return (arr);
-}
-
-char **tokens_to_args(t_token *token)
-{
-    int count = 0;
-    t_token *tmp = token;
-    char **args;
-    int i = 0;
-
-    // Count tokens
-    while (tmp)
+    else
     {
-        count++;
-        tmp = tmp->next;
+        // Execute external command
+        char *path = check_path(cmd->args[0]);
+        if (path)
+            execute_cmd(path, cmd->args);
+        else
+        {
+            fprintf(stderr, "Command not found: %s\n", cmd->args[0]);
+            return 127; // Command not found exit status
+        }
     }
-
-    args = malloc(sizeof(char *) * (count + 1));
-    if (!args)
-        return NULL;
-
-    tmp = token;
-    while (tmp)
-    {
-        args[i] = ft_strdup(tmp->value); // or strdup if you use libc
-        i++;
-        tmp = tmp->next;
-    }
-    args[i] = NULL;
-    return args;
+    return 0;
 }
