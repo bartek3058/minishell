@@ -62,11 +62,7 @@ int	ft_cd(char **args) {
 		perror("cd() error");
 		return 1;
 	}
-	else
-	{
-		chdir(path);
-		return 0;
-	}
+	return 0;
 }
 
 void	ft_builtins(t_minishell *shell, char **args)
