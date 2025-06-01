@@ -144,11 +144,13 @@ void	parser_double_redirect_output(t_token **head, char **argv);
 char 	*redirect_double_output_helper(char **argv);
 void	parser_double_redirect_input(t_token **head, char **argv);
 char 	*redirect_double_input_helper(char **argv);
-void	parser_cd(t_token **head, char **args);
+void	parser_cd(t_token **head, char **args, int i);
 void	parser_export(t_token **head, char **args);
 int		is_valid_varname(const char *str);
 void	add_token(t_token **head, char *key, char *value);
 void    parser_unset(t_token **token, char **args);
 void    parser_env(t_token **token, char **args);
+void    parser_or(t_token **head);
+void    parser_and(t_token **head);
 
 #endif

@@ -11,10 +11,16 @@ int count_echo_len(char **argv, int i)
 
 char *build_echo_value(char **argv)
 {
-    int i = (argv[1] && ft_strcmp(argv[1], "-n") == 0) ? 2 : 1;
-    int len = count_echo_len(argv, i);
-    char *result = malloc(len + 1);
+    int i;
+    int len;
+    char *result;
 
+    if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
+        i = 2;
+    else
+        i = 1;
+    len = count_echo_len(argv, i);
+    result = malloc(len + 1);
     if (!result)
         return NULL;
 
@@ -86,22 +92,18 @@ void    parser(char **args, t_token **token)
     i = 0;
     while(args[i] != NULL)
     {
-        if (ft_strncmp(args[i], "pwd", 3) == 0)
+        if (ft_strcmp(args[i], "pwd") == 0)
             parser_pwd(token);
-        else if (ft_strncmp(args[i], "echo", 4) == 0)
+        else if (ft_strcmp(args[i], "echo") == 0)
             parser_echo(token, args);
-        else if (ft_strncmp(args[i], "|", 1) == 0)
-            parser_pipe(token);
-        else if (ft_strncmp(args[i], ">", 1) == 0)
-            parser_redirect_output(token, args);
-        else if (ft_strncmp(args[i], "<", 1) == 0)
-            parser_redirect_input(token, args);
-        else if (ft_strncmp(args[i], ">>", 1) == 0)
-            parser_double_redirect_output(token, args);
-        else if (ft_strncmp(args[i], "<<", 1) == 0)
-            parser_double_redirect_input(token, args);
-        else if (ft_strncmp(args[i], "cd", 1) == 0)
-            parser_cd(token, args);
+        else if (ft_strcmp(args[i], "export") == 0)
+		    parser_export(token, args);
+	    else if (ft_strcmp(args[i], "unset") == 0)
+		    parser_unset(token, args);
+	    else if (ft_strcmp(args[i], "env") == 0)
+		    parser_env(token, args);
+        else if (ft_strcmp(args[i], "cd") == 0)
+            parser_cd(token, args, i);
         else
             parser_helper(token, args, &i);
         i++;

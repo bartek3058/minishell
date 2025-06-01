@@ -82,7 +82,7 @@ void	parser_export(t_token **head, char **args)
 	}
 }
 
-void	parser_cd(t_token **head, char **args)
+void	parser_cd(t_token **head, char **args, int i)
 {
 	t_token *new_token;
 	t_token *temp;
@@ -91,8 +91,8 @@ void	parser_cd(t_token **head, char **args)
 	if (!new_token)
 		return ;
 	new_token->type = "cd";
-    if(args[1])
-	    new_token->value = args[1];
+    if(args[i + 1])
+	    new_token->value = args[i + 1];
     else
     {
         new_token->value = NULL;
