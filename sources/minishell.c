@@ -7,16 +7,16 @@ void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 		add_history(shell->line); // obsluga historii, poruszania sie strzalkami
 		args = ft_split(shell->line, ' '); // dzielenie linii na argumenty
 		parser(args, token);
-		t_token *tmp;
-		tmp = *token;
-		while (tmp)
-   	 	{
-        	if (tmp->type && strcmp(tmp->type, "cd") == 0)
-        	{
-            	printf("Wartość cd: %s\n", tmp->value);
-    		}
-        	tmp = tmp->next;
-    	}
+		// t_token *tmp;
+		// tmp = *token;
+		// while (tmp)
+   	 	// {
+        // 	if (tmp->type && strcmp(tmp->type, "cd") == 0)
+        // 	{
+        //     	printf("Wartość cd: %s\n", tmp->value);
+    	// 	}
+        // 	tmp = tmp->next;
+    	// }
 		if (!args)
 		{
 			free(shell->line);
