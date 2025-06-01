@@ -28,13 +28,20 @@ void	init_token(t_token *token)
 
 void	parser_helper(t_token **token, char **args, int *i)
 {
-	if (ft_strncmp(args[*i], "export", 6) == 0)
-		parser_export(token, args);
-	else if (ft_strncmp(args[*i], "unset", 5) == 0)
-		parser_unset(token, args);
-	else if (ft_strncmp(args[*i], "env", 3) == 0)
-		parser_env(token, args);
-	
+	if (ft_strcmp(args[*i], "|") == 0)
+            parser_pipe(token);
+    else if (ft_strcmp(args[*i], ">") == 0)
+            parser_redirect_output(token, args);
+    else if (ft_strcmp(args[*i], "<") == 0)
+            parser_redirect_input(token, args);
+    else if (ft_strcmp(args[*i], ">>") == 0)
+            parser_double_redirect_output(token, args);
+    else if (ft_strcmp(args[*i], "<<") == 0)
+			parser_double_redirect_input(token, args);
+	else if (ft_strcmp(args[*i], "||") == 0)
+			parser_or(token);
+	else if (ft_strcmp(args[*i], "&&") == 0)
+			parser_and(token);
 }
 size_t	ft_strcpy(char *dst, const char *src)
 {
