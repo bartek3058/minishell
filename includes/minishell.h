@@ -131,7 +131,7 @@ void ft_test_export(t_minishell *shell);
 void ft_test_unset(t_minishell *shell);
 void ft_test_env(t_minishell *shell);
 void ft_test_exit(t_minishell *shell);
-
+void print_tokens(t_token *token); // wypisuje tokeny dla testow
 
 //parser
 void    parser(char **args, t_token **token);

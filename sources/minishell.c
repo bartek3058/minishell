@@ -14,6 +14,10 @@ void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 	add_history(shell->line); // obsluga historii, poruszania sie strzalkami
 	args = ft_split(shell->line, ' '); // dzielenie linii na argumenty
 	parser(args, token);
+	
+	//testy
+	print_tokens(*token);
+	
 	current = *token; // ustawienie aktualnego tokena na poczatek listy
 	while (current){
 		cmd_start = current; // zapisanie poczatku polecenia

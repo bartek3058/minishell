@@ -503,3 +503,16 @@ void ft_test_exit(t_minishell *shell)
     // For actual implementation, uncomment:
      ft_exit(shell);
 }
+
+void print_tokens(t_token *token)
+{
+    int i = 0;
+    while (token)
+    {
+        printf("token[%d]: type='%s', value='%s'\n", i,
+            token->type ? token->type : "NULL",
+            token->value ? token->value : "NULL");
+        token = token->next;
+        i++;
+    }
+}
