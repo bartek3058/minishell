@@ -81,6 +81,7 @@ void	ft_exit(t_minishell *shell);
 void	ft_pwd(void);
 int		ft_env(t_env *env);
 int		ft_unset(t_env **env_list, char *key);
+char	*strip_quotes(const char *str);
 
 //redirections
 void	ft_input_redirection(t_command *cmd);

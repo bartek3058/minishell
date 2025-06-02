@@ -11,15 +11,24 @@ int count_echo_len(char **argv, int i)
 
 char *build_echo_value(char **argv)
 {
-    int i;
-    int len;
-    char *result;
+	int		i;
+	int		j;
+	int		len;
+	char	*result;
+	char	*tmp;
 
-    if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
-        i = 2;
-    else
-        i = 1;
-    len = count_echo_len(argv, i);
+	if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
+		i = 2;
+	else
+		i = 1;
+
+	// Calculate length after stripping quotes
+    for (j = i; argv[j] && !is_redirect_or_pipe(argv[j]); j++) {
+        tmp = strip_quotes(argv[j]);
+        len += ft_strlen(tmp) + 1;
+        free(tmp);
+    }
+
     result = malloc(len + 1);
     if (!result)
         return NULL;
@@ -28,7 +37,9 @@ char *build_echo_value(char **argv)
 
     while (argv[i] && !is_redirect_or_pipe(argv[i]))
     {
-        ft_strcat(result, argv[i]);
+		tmp = strip_quotes(argv[i]);
+		ft_strcat(result, tmp);
+		free(tmp);
         if (argv[i + 1] && !is_redirect_or_pipe(argv[i + 1]))
             ft_strcat(result, " ");
         i++;
@@ -37,21 +48,17 @@ char *build_echo_value(char **argv)
     return result;
 }
 
-void    parser_echo(t_token **head, char **argv)
+void parser_echo(t_token **head, char **argv)
 {
-    t_token *new_token;
-    t_token *temp;
+    int i = 1;
+    t_token *new_token, *temp;
 
+    // First token: command only
     new_token = malloc(sizeof(t_token));
     if (!new_token)
         return;
-
-    if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
-        new_token->type = ft_strdup("echo_n");
-    else
-        new_token->type = ft_strdup("echo");
-
-    new_token->value = build_echo_value(argv);
+    new_token->type = ft_strdup("echo");
+    new_token->value = NULL;
     new_token->next = NULL;
 
     if (*head == NULL)
@@ -62,6 +69,21 @@ void    parser_echo(t_token **head, char **argv)
         while (temp->next)
             temp = temp->next;
         temp->next = new_token;
+    }
+    temp = new_token;
+
+    // Add each argument as a separate token
+    while (argv[i] && !is_redirect_or_pipe(argv[i]))
+    {
+        t_token *arg_token = malloc(sizeof(t_token));
+        if (!arg_token)
+            return;
+        arg_token->type = NULL;
+        arg_token->value = strip_quotes(argv[i]);
+        arg_token->next = NULL;
+        temp->next = arg_token;
+        temp = arg_token;
+        i++;
     }
 }
 
