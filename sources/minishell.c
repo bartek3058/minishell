@@ -14,13 +14,6 @@ void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 	add_history(shell->line); // obsluga historii, poruszania sie strzalkami
 	args = ft_split(shell->line, ' '); // dzielenie linii na argumenty
 	parser(args, token);
-	// testing
-	if (!*token) {
-    	printf("Parser returned no tokens!\n");
-    	// Optionally print args for debugging
-    	for (int i = 0; args && args[i]; i++)
-        	printf("args[%d]: %s\n", i, args[i]);
-	}
 	current = *token; // ustawienie aktualnego tokena na poczatek listy
 	while (current){
 		cmd_start = current; // zapisanie poczatku polecenia
@@ -37,7 +30,6 @@ void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 				free_args(exec_args); // zwolnienie pamieci po tablicy argumentow
 			return ;
 		}
-		printf("Executing command: %s\n", exec_args[0]); // debugowanie, wyswietlenie polecenia
 		if (is_builtin(exec_args[0])) // sprawdzenie czy polecenie jest wbudowane
 			ft_builtins(shell, exec_args); // obsluga builtins (pwd, echo, ...)
 		else

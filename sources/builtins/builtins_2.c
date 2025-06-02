@@ -59,3 +59,18 @@ int	ft_unset(t_env **env_list, char *key)
 	}
 	return (0);
 }
+char *strip_quotes(const char *str)
+{
+    size_t len = ft_strlen(str);
+    if ((str[0] == '"' && str[len - 1] == '"') ||
+        (str[0] == '\'' && str[len - 1] == '\''))
+    {
+        char *res = malloc(len - 1);
+        if (!res)
+            return NULL;
+		ft_strlcpy(res, str + 1, len - 1); // copy without first quote, leave space for null
+        res[len - 2] = '\0';
+        return res;
+    }
+    return ft_strdup(str);
+}

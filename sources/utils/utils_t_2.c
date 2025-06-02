@@ -45,22 +45,37 @@ char	**conv_env_to_array(t_env *env)
 
 char **tokens_to_args(t_token *token)
 {
-    char **args;
-    int argc = 1;
+    int count = 0;
+    t_token *tmp = token;
 
-    if (!token || !token->type)
-        return NULL;
+    // Count: command + all value tokens (including value of first token)
+    while (tmp)
+    {
+        count++; // one for each token
+        tmp = tmp->next;
+    }
 
-    if (token->value)
-        argc++;
-
-    args = malloc(sizeof(char *) * (argc + 1));
+    char **args = malloc(sizeof(char *) * (count + 1));
     if (!args)
         return NULL;
 
-    args[0] = ft_strdup(token->type);
+    tmp = token;
+    int i = 0;
+    // Always put command name
+    args[i++] = ft_strdup(token->type);
+
+    // If first token has a value, add it
     if (token->value)
-        args[1] = ft_strdup(token->value);
-    args[argc] = NULL;
+        args[i++] = ft_strdup(token->value);
+
+    // Add values of all subsequent tokens
+    tmp = token->next;
+    while (tmp)
+    {
+        if (tmp->value)
+            args[i++] = ft_strdup(tmp->value);
+        tmp = tmp->next;
+    }
+    args[i] = NULL;
     return args;
 }
