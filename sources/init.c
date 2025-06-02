@@ -64,7 +64,7 @@ void	setup_signals(void)
 	signal(SIGQUIT, SIG_IGN); // ignorowanie Ctrl+\ (SIGQUIT)
 }
 
-void	init_minishell(t_minishell *shell, char **envp, t_token *token)
+void	init_minishell(t_minishell *shell, char **envp, t_token **token)
 {
 	int i;
 	char *key;
@@ -75,7 +75,7 @@ void	init_minishell(t_minishell *shell, char **envp, t_token *token)
 	shell->exit_status = 0;
 	shell->running = 1;
 	shell->line = NULL;
-	init_token(token); 
+	*token = NULL; // inicjalizacja listy tokenow
 	i = 0; // inicjalizacja listy zmiennych srodowiskowych
 	while (envp[i])
 	{

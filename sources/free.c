@@ -41,3 +41,16 @@ void	free_env_node(t_env *node)
 		free(node);
 	}
 }
+void free_tokens(t_token *token) 
+{
+    t_token *tmp;
+    while (token) {
+        tmp = token->next;
+        if (token->type)
+            free(token->type);
+        if (token->value)
+            free(token->value);
+        free(token);
+        token = tmp;
+    }
+}
