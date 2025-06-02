@@ -10,7 +10,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <fcntl.h>
-#include <../libft/libft.h>
+#include "../libft/libft.h"
 
 
 // struktura reprezentujaca token z parsera
@@ -55,7 +55,7 @@ typedef struct s_minishell
 
 
 int		main(int argc, char **argv, char **envp);
-void	minishell_loop(t_minishell *shell, char **args, t_token *token);
+void	minishell_loop(t_minishell *shell, char **args, t_token **token);
 
 int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	*ft_strchr(const char *s, int c);
@@ -65,7 +65,7 @@ int		update_existing_env(t_env *env_list, char *key, char *value);
 int		add_env(t_env **env_list, char *key, char *value);
 void	handle_sigint(int sig);
 void	setup_signals(void);
-void	init_minishell(t_minishell *shell, char **envp, t_token *token);
+void	init_minishell(t_minishell *shell, char **envp, t_token **token);
 
 int		ft_strcmp(const char *s1, const char *s2);
 void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token);
@@ -95,6 +95,7 @@ void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2); // w
 int		execute_cmd(char *path, char **args); 	// wykonuje polecenie
 int		execute_command(t_minishell *shell, t_command *cmd); // sprawdza czy polecenie jest wbudowane i je wykonuje
 char	*check_path(char *cmd);			// sprawdza sciezke do polecenia
+int		is_builtin(char *cmd);
 
 //utils_t_2
 char	**conv_env_to_array(t_env *env); // konwersja listy zmiennych srodowiskowych na tablice
@@ -102,7 +103,7 @@ char	**tokens_to_args(t_token *token); // konwersja listy tokenow na tablice arg
 
 
 //utils
-void	init_token(t_token *token);
+void	init_token(t_token **token);
 size_t	ft_strcpy(char *dst, const char *src);
 char	*ft_strcat(char *dst, const char *src);
 void	parser_helper(t_token **token, char **args, int *i);
@@ -112,6 +113,7 @@ int is_redirect_or_pipe(char *arg);
 void	free_args(char **args);   // zwalnia pamiec po tablicy argumentow
 void	free_env(t_env *env);     // zwalnia pamiec po zmiennych srodowiskowych
 void	free_env_node(t_env *node); // zwalnia pamiec po pojedynczej zmiennej srodowiskowej (dla unset)
+void	free_tokens(t_token *token); // zwalnia pamięc po linked liście z tokenami
 
 //tests
 void ft_test_command_handler(t_minishell *shell, int *test_nr);
@@ -148,9 +150,10 @@ void	parser_cd(t_token **head, char **args, int i);
 void	parser_export(t_token **head, char **args);
 int		is_valid_varname(const char *str);
 void	add_token(t_token **head, char *key, char *value);
-void    parser_unset(t_token **token, char **args);
-void    parser_env(t_token **token, char **args);
-void    parser_or(t_token **head);
-void    parser_and(t_token **head);
+void	parser_unset(t_token **token, char **args);
+void	parser_env(t_token **token, char **args);
+void	parser_or(t_token **head);
+void	parser_and(t_token **head);
+void	parser_exit(t_token **head);
 
 #endif

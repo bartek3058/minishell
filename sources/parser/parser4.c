@@ -90,9 +90,9 @@ void	parser_cd(t_token **head, char **args, int i)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return ;
-	new_token->type = "cd";
-    if(args[i + 1])
-	    new_token->value = args[i + 1];
+	new_token->type = ft_strdup("cd");
+    if(args[i + 1] && !is_redirect_or_pipe(args[i + 1]))
+	    new_token->value = ft_strdup(args[i + 1]);
     else
     {
         new_token->value = NULL;

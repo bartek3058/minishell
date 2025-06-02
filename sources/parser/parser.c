@@ -47,9 +47,9 @@ void    parser_echo(t_token **head, char **argv)
         return;
 
     if (argv[1] && ft_strcmp(argv[1], "-n") == 0)
-        new_token->type = "echo_n";
+        new_token->type = ft_strdup("echo_n");
     else
-        new_token->type = "echo";
+        new_token->type = ft_strdup("echo");
 
     new_token->value = build_echo_value(argv);
     new_token->next = NULL;
@@ -71,7 +71,7 @@ void    parser_pwd(t_token **head)
     t_token *temp;
     if (!new_token)
         return ;
-    new_token->type = "pwd";
+    new_token->type = ft_strdup("pwd");
     new_token->value = NULL;
     new_token->next = NULL;
     if (*head == NULL)
@@ -88,7 +88,6 @@ void    parser_pwd(t_token **head)
 void    parser(char **args, t_token **token)
 {
     int i;
-
     i = 0;
     while(args[i] != NULL)
     {
@@ -102,8 +101,13 @@ void    parser(char **args, t_token **token)
 		    parser_unset(token, args);
 	    else if (ft_strcmp(args[i], "env") == 0)
 		    parser_env(token, args);
-        else if (ft_strcmp(args[i], "cd") == 0)
+        else if (ft_strcmp(args[i], "cd") == 0){
             parser_cd(token, args, i);
+			if (args[i + 1] && !is_redirect_or_pipe(args[i + 1]))
+        	i++; // skip the argument so it's not processed again
+		}
+		else if (ft_strcmp(args[i], "exit") == 0)
+			parser_exit(token);
         else
             parser_helper(token, args, &i);
         i++;

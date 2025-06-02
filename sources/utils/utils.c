@@ -19,13 +19,6 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
-void	init_token(t_token *token)
-{
-	token->type = NULL;
-	token->value = NULL;
-	token->next = NULL;
-}
-
 void	parser_helper(t_token **token, char **args, int *i)
 {
 	if (ft_strcmp(args[*i], "|") == 0)

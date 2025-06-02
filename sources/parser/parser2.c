@@ -31,7 +31,7 @@ void    parser_redirect_input(t_token **head, char **argv)
     new_token = malloc(sizeof(t_token));
     if (!new_token)
         return ;
-    new_token->type = "redirect_input";
+    new_token->type = ft_strdup("redirect_input");
     new_token->value = filename;
     new_token->next = NULL;
     if (*head == NULL)
@@ -76,7 +76,7 @@ void    parser_redirect_output(t_token **head, char **argv)
     new_token = malloc(sizeof(t_token));
     if(!new_token)
         return ;
-    new_token->type = "redirect_output";
+    new_token->type = ft_strdup("redirect_output");
     new_token->value = filename;
     new_token->next = NULL;
     if(*head == NULL)
@@ -99,7 +99,7 @@ void    parser_pipe(t_token **head)
     if(!new_token)
         return ;
     temp = *head;
-    new_token->type = "pipe";
+    new_token->type = ft_strdup("pipe");
     new_token->value = NULL;
     new_token->next = NULL;
     if(*head == NULL)

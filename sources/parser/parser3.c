@@ -32,7 +32,7 @@ void	parser_double_redirect_input(t_token **head, char **argv)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return ;
-	new_token->type = "redirect_double_input";
+	new_token->type = ft_strdup("redirect_double_input");
 	new_token->value = filename;
 	new_token->next = NULL;
 	if(*head == NULL)
@@ -78,7 +78,7 @@ void	parser_double_redirect_output(t_token **head, char **argv)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return ;
-	new_token->type = "redirect_double_output";
+	new_token->type = ft_strdup("redirect_double_output");
 	new_token->value = filename;
 	new_token->next = NULL;
 	if(*head == NULL)
