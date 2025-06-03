@@ -40,11 +40,24 @@ void    parser_or(t_token **head)
     }
 }
 
-void    parser_env(t_token **token, char **args)
+void parser_env(t_token **head)
 {
-    if (args[1])
-        printf("env: too many arguments\n");
-    add_token(token, "env", NULL);
+    t_token *new_token = malloc(sizeof(t_token));
+    t_token *temp;
+    if (!new_token)
+        return;
+    new_token->type = ft_strdup("env");
+    new_token->value = NULL;
+    new_token->next = NULL;
+    if (*head == NULL)
+        *head = new_token;
+    else
+    {
+        temp = *head;
+        while (temp->next)
+            temp = temp->next;
+        temp->next = new_token;
+    }
 }
 
 void parser_exit(t_token **head)

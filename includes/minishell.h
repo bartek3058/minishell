@@ -152,7 +152,7 @@ void	parser_export(t_token **head, char **args);
 int		is_valid_varname(const char *str);
 void	add_token(t_token **head, char *key, char *value);
 void	parser_unset(t_token **token, char **args);
-void	parser_env(t_token **token, char **args);
+void	parser_env(t_token **token);
 void	parser_or(t_token **head);
 void	parser_and(t_token **head);
 void	parser_exit(t_token **head);
