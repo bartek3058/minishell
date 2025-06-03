@@ -52,7 +52,7 @@ void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 
 void	minishell_loop(t_minishell *shell, char **args, t_token **token)
 {
-	while(1) // glowna petla
+	while(shell->running) // glowna petla
 	{
 		shell->line = readline("minishell$ "); // wyswietlanie i czytanie prompta
 		if(shell->line == NULL) // obsluga ctrl+d, ctrl+d zwraca NULL z readline

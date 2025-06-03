@@ -23,6 +23,8 @@ static int	remove_first_node(t_env **env_list, char *key)
 {
 	t_env	*temp;
 
+	if (!env_list || !*env_list)
+		return 0;
 	if (ft_strcmp((*env_list)->key, key) == 0)
 	{
 		temp = *env_list;
@@ -33,32 +35,44 @@ static int	remove_first_node(t_env **env_list, char *key)
 	return (0);
 }
 
-int	ft_unset(t_env **env_list, char *key)
+int ft_unset(t_env **env_list, char **args)
 {
-	t_env	*current;
-	t_env	*prev;
+    t_env *current;
+    t_env *prev;
+    t_env *to_free;
+    int i;
+    int ret;
 
-	if (!env_list || !*env_list || !key)
-		return (1);
-	
-	if (remove_first_node(env_list, key))
-		return (0);
-	
-	prev = *env_list;
-	current = prev->next;
-	while (current)
-	{
-		if (ft_strcmp(current->key, key) == 0)
-		{
-			prev->next = current->next;
-			free_env_node(current);
-			return (0);
-		}
-		prev = current;
-		current = current->next;
-	}
-	return (0);
+    i = 1;
+    ret = 0;
+    while (args[i])
+    {
+        ret = remove_first_node(env_list, args[i]);
+        if (!ret)
+        {
+            current = *env_list;
+            prev = NULL;
+            while (current)
+            {
+                if (ft_strcmp(current->key, args[i]) == 0)
+                {
+                    to_free = current;
+                    if (prev)
+                        prev->next = current->next;
+                    else
+                        *env_list = current->next;
+                    free_env_node(to_free);
+                    break;
+                }
+                prev = current;
+                current = current->next;
+            }
+        }
+        i++;
+    }
+    return (0);
 }
+
 char *strip_quotes(const char *str)
 {
     size_t len = ft_strlen(str);
@@ -73,4 +87,39 @@ char *strip_quotes(const char *str)
         return res;
     }
     return ft_strdup(str);
+}
+
+int ft_export(t_minishell *shell, char **args)
+{
+    int i;
+    char *eq;
+    char *key;
+    char *value;
+
+    if (!args[1])
+        return (ft_env(shell->env_list));
+    i = 1;
+    while (args[i]){
+        eq = ft_strchr(args[i], '=');
+        if (eq){
+            key = ft_substr(args[i], 0, eq - args[i]);
+            value = ft_strdup(eq + 1);
+            if (is_valid_varname(key))
+                add_env(&(shell->env_list), key, value);
+            else
+                printf("export: '%s': not a valid identifier\n", key);
+            free(key);
+            free(value);
+        }
+        else{
+            if (is_valid_varname(args[i])){
+                if (!update_existing_env(shell->env_list, args[i], ""))
+                    add_env(&(shell->env_list), args[i], "");
+            }
+            else
+                printf("export: '%s': not a valid identifier\n", args[i]);
+        }
+        i++;
+    }
+    return (0);
 }

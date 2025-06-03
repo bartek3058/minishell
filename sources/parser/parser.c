@@ -122,7 +122,7 @@ void    parser(char **args, t_token **token)
 	    else if (ft_strcmp(args[i], "unset") == 0)
 		    parser_unset(token, args);
 	    else if (ft_strcmp(args[i], "env") == 0)
-		    parser_env(token, args);
+		    parser_env(token);
         else if (ft_strcmp(args[i], "cd") == 0){
             parser_cd(token, args, i);
 			if (args[i + 1] && !is_redirect_or_pipe(args[i + 1]))

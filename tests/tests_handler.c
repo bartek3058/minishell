@@ -457,7 +457,7 @@ void ft_test_unset(t_minishell *shell)
     cmd.args = args2;
     
     printf("\nTesting unset builtin: %s %s\n", cmd.args[0], cmd.args[1]);
-    ft_unset(&(shell->env_list), cmd.args[1]); 
+    ft_unset(&(shell->env_list), cmd.args); 
 
     // Verify the variable was unset
     printf("\nVerifying UNSET_TEST is unset:\n");
