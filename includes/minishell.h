@@ -80,7 +80,8 @@ int		ft_echo(char **args);
 void	ft_exit(t_minishell *shell);
 void	ft_pwd(void);
 int		ft_env(t_env *env);
-int		ft_unset(t_env **env_list, char *key);
+int		ft_unset(t_env **env_list, char **args);
+int		ft_export(t_minishell *shell, char **args);
 char	*strip_quotes(const char *str);
 
 //redirections
@@ -101,6 +102,7 @@ int		is_builtin(char *cmd);
 //utils_t_2
 char	**conv_env_to_array(t_env *env); // konwersja listy zmiennych srodowiskowych na tablice
 char	**tokens_to_args(t_token *token); // konwersja listy tokenow na tablice argumentow
+int		is_valid_var_or_assign(const char *str);
 
 
 //utils
@@ -108,7 +110,7 @@ void	init_token(t_token **token);
 size_t	ft_strcpy(char *dst, const char *src);
 char	*ft_strcat(char *dst, const char *src);
 void	parser_helper(t_token **token, char **args, int *i);
-int is_redirect_or_pipe(char *arg);
+int		is_redirect_or_pipe(char *arg);
 
 //clean-up
 void	free_args(char **args);   // zwalnia pamiec po tablicy argumentow

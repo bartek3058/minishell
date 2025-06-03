@@ -70,8 +70,7 @@ void	ft_builtins(t_minishell *shell, char **args)
 		return;
 	if (ft_strcmp(args[0], "pwd") == 0)
 		ft_pwd();
-	else if (ft_strcmp(args[0], "exit") == 0)
-	{
+	else if (ft_strcmp(args[0], "exit") == 0){
 		ft_exit(shell);
 		shell->running = 0; // ustawienie flagi do zakonczenia petli
 	}
@@ -82,9 +81,9 @@ void	ft_builtins(t_minishell *shell, char **args)
 	else if (ft_strcmp(args[0], "env") == 0)
 		shell->exit_status = ft_env(shell->env_list);
 	else if (ft_strcmp(args[0], "export") == 0)
-		shell->exit_status = add_env(&(shell->env_list), args[1], args[2]); // pass key and value
+		shell->exit_status = ft_export(shell, args);
 	else if (ft_strcmp(args[0], "unset") == 0)
-		shell->exit_status = ft_unset(&(shell->env_list), args[1]); // pass key
+		shell->exit_status = ft_unset(&(shell->env_list), args); // pass args
 	else
 	{
 		fprintf(stderr, "minishell: %s: command not found\n", args[0]);
