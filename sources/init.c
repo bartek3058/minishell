@@ -53,9 +53,11 @@ void handle_sigint(int sig)
 {
 	(void)sig; // wyswietl nowa linie i prompt
 	//resetowanie readline dla nowego prompta - to gotowe funkcje z tabelki
+	write(1, "\n", 1);
 	rl_on_new_line(); // informuje, ze kursor znajduje sie na nowej linii
 	rl_replace_line("", 0); // zastepuje aktualna linie pustym ciagiem znakow
 	rl_redisplay(); //wymusza odswiezenie wyswietlanego tekstu
+	//exit_code = 130; lub inna zmienna, która bedzie ustawiana
 }
 
 void	setup_signals(void)
