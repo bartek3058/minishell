@@ -24,7 +24,8 @@ SRCS	=	./sources/minishell.c\
 					./sources/parser/parser4.c\
 					./sources/utils/utils_b.c\
 					./sources/parser/parser5.c\
-					./tests/tests_handler.c
+					./tests/tests_handler.c\
+					./sources/parser/parser_t.c
 				
 OBJS	=	${SRCS:.c=.o}
 

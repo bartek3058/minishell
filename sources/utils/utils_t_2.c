@@ -17,6 +17,7 @@ static	int	ft_envsize(t_env *env)
 char	**conv_env_to_array(t_env *env)
 {
 	char	**arr;
+	char	*tmp;
 	int		count;
 	t_env	*current;
 	int		i;
@@ -29,12 +30,21 @@ char	**conv_env_to_array(t_env *env)
 	i = 0;
 	while (current)
 	{
-		arr[i] = ft_strjoin(current->key, "=");
-		arr[i] = ft_strjoin(arr[i], current->value);
+		tmp = ft_strjoin(current->key, "=");
+		if (!tmp)
+		{
+			free_args(arr);
+			return (NULL); // zwolnienie pamieci w przypadku bledow
+		}
+		if (current->value)
+			arr[i] = ft_strjoin(tmp, current->value);
+		else
+			arr[i] = ft_strdup(tmp);
+		free(tmp);
 		if (!arr[i])
 		{
 			free_args(arr);
-			return (0); 
+			return (NULL); 
 		}
 		current = current->next;
 		i++;
@@ -97,4 +107,19 @@ int	is_valid_var_or_assign(const char *str)
 	}
 	else
 		return (is_valid_varname(str));
+}
+int	is_valid_varname(const char *str)
+{
+	int i;
+
+	if (!str || (!ft_isalpha(*str) && *str != '_'))
+		return 0;
+	i = 1;
+	while (str[i])
+	{
+		if (!ft_isalnum(str[i]) && str[i] != '_')
+			return 0;
+		i++;
+	}
+	return 1;
 }

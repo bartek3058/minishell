@@ -3,9 +3,10 @@
 void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 {
 	char	**exec_args;
+	char	*path;
 	t_token	*current;
-	t_token *cmd_start;
-	t_token *cmd_end;
+	t_token	*cmd_start;
+	t_token	*cmd_end;
 
 	if(shell->line[0] == '\0') {
 		free(shell->line);
@@ -37,8 +38,17 @@ void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 		if (is_builtin(exec_args[0])) // sprawdzenie czy polecenie jest wbudowane
 			ft_builtins(shell, exec_args); // obsluga builtins (pwd, echo, ...)
 		else
-			execute_cmd(check_path(exec_args[0]), exec_args); // wykonanie polecenia
-		free_args(exec_args); // zwolnienie pamieci po tablicy argumentow
+		{
+			path = check_path(exec_args[0]);
+//			printf("DEBUG: check_path('%s') = %s\n", exec_args[0], path);
+			if (path)
+				execute_cmd(path, exec_args, shell->env_list); // wykonanie polecenia
+			else
+				fprintf(stderr, "minishell: %s: command not found\n", exec_args[0]);
+			if (path)
+				free(path);
+		}
+			free_args(exec_args); // zwolnienie pamieci po tablicy argumentow
 		if (current == cmd_end)
 			current = cmd_end->next; // przejscie do nastepnego polecenia
 		else
