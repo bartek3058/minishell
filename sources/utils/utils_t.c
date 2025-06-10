@@ -5,20 +5,37 @@ char	*check_path(char *cmd)
 	char	*path;
 	char	**paths;
 	char	*full_path;
+	char	*tmp;
 	int		i;
 
+	if (!cmd || !*cmd)
+		return NULL;
+	if (ft_strchr(cmd, '/')) // czy ścieżka jest względna czy bezwzględna
+	{
+		if (access(cmd, X_OK) == 0)
+			return ft_strdup(cmd);
+		else
+			return NULL;
+	}
 	path = getenv("PATH");
+	if (!path)
+		return NULL;
 	paths = ft_split(path, ':');
 	i = 0;
-	while (paths[i])
+	while (paths && paths[i])
 	{
-		full_path = ft_strjoin(paths[i], "/");
-		full_path = ft_strjoin(full_path, cmd);
+		tmp = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(tmp, cmd);
+		free(tmp);
 		if (access(full_path, X_OK) == 0)
+		{
+			free_args(paths);
 			return full_path;
+		}
 		free(full_path);
 		i++;
 	}
+	free_args(paths);
 	return(0);
 }
 int	is_builtin(char *cmd)
@@ -41,15 +58,23 @@ int	is_builtin(char *cmd)
         return 1;
     return 0;
 }
-int	execute_cmd(char *path, char **args)
+int	execute_cmd(char *path, char **args, t_env *env_list)
 {
 	pid_t	pid;
 	int		status;
+	char	**envp;
 
+	envp = conv_env_to_array(env_list); // Convert env_list to char ** for execve
+	if (!envp)
+	{
+		perror("Failed to convert env_list to array");
+		exit(EXIT_FAILURE);
+	}
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(path, args, NULL) == -1)
+//		printf("DEBUG: execve('%s', ...)\n", path);
+		if (execve(path, args, envp) == -1)
 		{
 			perror("execve error");
 			exit(EXIT_FAILURE);
@@ -82,7 +107,7 @@ int	execute_command(t_minishell *shell, t_command *cmd)
         // Execute external command
         char *path = check_path(cmd->args[0]);
         if (path)
-            execute_cmd(path, cmd->args);
+            execute_cmd(path, cmd->args, shell->env_list);
         else
         {
             fprintf(stderr, "Command not found: %s\n", cmd->args[0]);

@@ -89,7 +89,7 @@ void ft_test_basic_command(void)
     {
         char *path = check_path(cmd.args[0]);
         if (path)
-            execute_cmd(path, cmd.args);
+            execute_cmd(path, cmd.args, NULL);
         else
             fprintf(stderr, "Command not found: %s\n", cmd.args[0]);
     }
@@ -120,7 +120,6 @@ void ft_test_input_redirection(void)
     cmd.input_file = "test_input.txt";
     
     printf("Testing input redirection: %s < %s\n", cmd.args[0], cmd.input_file);
-    
 
 	stdin_copy = dup(STDIN_FILENO); // Save original stdin
     // Handle input redirection
@@ -131,7 +130,7 @@ void ft_test_input_redirection(void)
     {
         char *path = check_path(cmd.args[0]);
         if (path)
-            execute_cmd(path, cmd.args);
+            execute_cmd(path, cmd.args, NULL);
         else
             fprintf(stderr, "Command not found: %s\n", cmd.args[0]);
     }
@@ -173,7 +172,7 @@ void ft_test_output_redirection(void)
     {
         char *path = check_path(cmd.args[0]);
         if (path)
-            execute_cmd(path, cmd.args);
+            execute_cmd(path, cmd.args, NULL);
         else
             fprintf(stderr, "Command not found: %s\n", cmd.args[0]);
     }
@@ -230,7 +229,7 @@ void ft_test_append_redirection(void)
     {
         char *path = check_path(cmd.args[0]);
         if (path)
-            execute_cmd(path, cmd.args);
+            execute_cmd(path, cmd.args, NULL);
         else
             fprintf(stderr, "Command not found: %s\n", cmd.args[0]);
     }
@@ -285,7 +284,7 @@ void ft_test_heredoc(void)
     {
         char *path = check_path(cmd.args[0]);
         if (path)
-            execute_cmd(path, cmd.args);
+            execute_cmd(path, cmd.args, NULL);
         else
             fprintf(stderr, "Command not found: %s\n", cmd.args[0]);
     }

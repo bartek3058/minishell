@@ -94,7 +94,7 @@ void	ft_heredoc_redirection(t_command *cmd);
 void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2); // wykonuje polecenia w potoku
 
 //utils_t
-int		execute_cmd(char *path, char **args); 	// wykonuje polecenie
+int		execute_cmd(char *path, char **args, t_env *env_list); 	// wykonuje polecenie
 int		execute_command(t_minishell *shell, t_command *cmd); // sprawdza czy polecenie jest wbudowane i je wykonuje
 char	*check_path(char *cmd);			// sprawdza sciezke do polecenia
 int		is_builtin(char *cmd);
@@ -103,6 +103,7 @@ int		is_builtin(char *cmd);
 char	**conv_env_to_array(t_env *env); // konwersja listy zmiennych srodowiskowych na tablice
 char	**tokens_to_args(t_token *token); // konwersja listy tokenow na tablice argumentow
 int		is_valid_var_or_assign(const char *str);
+int		is_valid_varname(const char *str);
 
 
 //utils
@@ -137,9 +138,6 @@ void print_tokens(t_token *token); // wypisuje tokeny dla testow
 
 //parser
 void    parser(char **args, t_token **token);
-void    parser_pwd(t_token **head);
-char *build_echo_value(char **argv);
-int count_echo_len(char **argv, int i);
 void    parser_pipe(t_token **head);
 void    parser_redirect_output(t_token **head, char **argv);
 char    *redirect_output_helper(char **argv);
@@ -149,14 +147,10 @@ void	parser_double_redirect_output(t_token **head, char **argv);
 char 	*redirect_double_output_helper(char **argv);
 void	parser_double_redirect_input(t_token **head, char **argv);
 char 	*redirect_double_input_helper(char **argv);
-void	parser_cd(t_token **head, char **args, int i);
-void	parser_export(t_token **head, char **args);
-int		is_valid_varname(const char *str);
 void	add_token(t_token **head, char *key, char *value);
-void	parser_unset(t_token **token, char **args);
-void	parser_env(t_token **token);
 void	parser_or(t_token **head);
 void	parser_and(t_token **head);
-void	parser_exit(t_token **head);
+void	parser_single(t_token **token, char **args, int *i);
+void	parser_multi(t_token **token, char **args, int *i);
 
 #endif
