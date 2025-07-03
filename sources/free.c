@@ -8,12 +8,9 @@ void	free_args(char **args)
 	if (!args)
 		return ;
 	while (args[i])
-	i++;
-	while (i>= 0)
 	{
 		free(args[i]);
-		args[i] = NULL;	
-		i--;
+		i++;
 	}
 	free(args);
 }
@@ -41,16 +38,28 @@ void	free_env_node(t_env *node)
 		free(node);
 	}
 }
-void free_tokens(t_token *token) 
+void	free_tokens(t_token *token)
 {
-    t_token *tmp;
-    while (token) {
-        tmp = token->next;
-        if (token->type)
-            free(token->type);
-        if (token->value)
-            free(token->value);
-        free(token);
-        token = tmp;
-    }
+	t_token *tmp;
+
+	while (token)
+	{
+		tmp = token->next;
+		if (token->type)
+			free(token->type);
+		if (token->value)
+			free(token->value);
+		free(token);
+		token = tmp;
+	}
+}
+
+void cleanup_and_return(char **args, char *line, t_token *token)
+{
+    if (args)
+        free_args(args);
+    if (line)
+        free(line);
+    if (token)
+        free_tokens(token);
 }

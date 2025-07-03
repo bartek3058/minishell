@@ -19,23 +19,6 @@ int	ft_strcmp(const char *s1, const char *s2)
 	return (0);
 }
 
-void	parser_helper(t_token **token, char **args, int *i)
-{
-	if (ft_strcmp(args[*i], "|") == 0)
-            parser_pipe(token);
-    else if (ft_strcmp(args[*i], ">") == 0)
-            parser_redirect_output(token, args);
-    else if (ft_strcmp(args[*i], "<") == 0)
-            parser_redirect_input(token, args);
-    else if (ft_strcmp(args[*i], ">>") == 0)
-            parser_double_redirect_output(token, args);
-    else if (ft_strcmp(args[*i], "<<") == 0)
-			parser_double_redirect_input(token, args);
-	else if (ft_strcmp(args[*i], "||") == 0)
-			parser_or(token);
-	else if (ft_strcmp(args[*i], "&&") == 0)
-			parser_and(token);
-}
 size_t	ft_strcpy(char *dst, const char *src)
 {
 	int i;
@@ -65,4 +48,16 @@ char	*ft_strcat(char *dst, const char *src)
 	}
 	dst[dst_len + i] = '\0';
 	return (dst);
+}
+void print_tokens(t_token *token)
+{
+    int i = 0;
+    while (token)
+    {
+        printf("token[%d]: type='%s', value='%s'\n", i,
+            token->type ? token->type : "NULL",
+            token->value ? token->value : "NULL");
+        token = token->next;
+        i++;
+    }
 }
