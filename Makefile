@@ -12,20 +12,21 @@ SRCS	=	./sources/minishell.c\
 					./sources/builtins/builtins.c\
 					./sources/builtins/builtins_2.c\
 					./sources/utils/utils.c\
+					./sources/utils/utils_b.c\
 					./sources/utils/utils_t.c\
 					./sources/utils/utils_t_2.c\
+					./sources/utils/exec.c\
 					./sources/redirections.c\
 					./sources/pipes.c\
 					./sources/free.c\
 					./sources/init.c\
 					./sources/parser/parser.c\
+					./sources/parser/parser1.c\
 					./sources/parser/parser2.c\
-					./sources/parser/parser3.c\
-					./sources/parser/parser4.c\
-					./sources/utils/utils_b.c\
-					./sources/parser/parser5.c\
-					./tests/tests_handler.c\
-					./sources/parser/parser_t.c
+					./sources/parser/token_proc.c\
+					./sources/parser/expansion.c\
+					./sources/parser/smart_split.c
+
 				
 OBJS	=	${SRCS:.c=.o}
 

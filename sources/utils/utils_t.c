@@ -95,19 +95,24 @@ int	execute_cmd(char *path, char **args, t_env *env_list)
 }
 int	execute_command(t_minishell *shell, t_command *cmd)
 {
-    // Check if command is a builtin
+	int	status;
+	
+	// Check if command is a builtin
     if (is_builtin(cmd->args[0]))
     {
         // Execute builtin in current process
         ft_builtins(shell, cmd->args);
-		return (0);
+		return shell->exit_status;
     }
     else
     {
         // Execute external command
         char *path = check_path(cmd->args[0]);
-        if (path)
-            execute_cmd(path, cmd->args, shell->env_list);
+        if (path){
+			status = execute_cmd(path, cmd->args, shell->env_list);
+			free(path);
+			return status;
+		}
         else
         {
             fprintf(stderr, "Command not found: %s\n", cmd->args[0]);

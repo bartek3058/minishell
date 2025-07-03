@@ -15,6 +15,7 @@ int	ft_echo(char **args)
 	}
 	while (args[i])
 	{
+		args[i] = strip_quotes(args[i]);
 		ft_putstr_fd(args[i], 1);
 		if (args[i + 1]) // jesli jest nastepny argument dodaj spacje
 			write(1, " ", 1);

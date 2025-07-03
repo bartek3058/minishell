@@ -1,26 +1,5 @@
 #include "../includes/minishell.h"
 
-void	ft_input_redirection(t_command *cmd)
-{
-	int fd;
-
-	if (cmd->input_file)
-	{
-		fd = open(cmd->input_file, O_RDONLY);
-		if (fd < 0)
-		{
-			perror("Error opening input file");
-			exit(EXIT_FAILURE);
-		}
-		if (dup2(fd, STDIN_FILENO) < 0)
-		{
-			perror("Error duplicating file descriptor");
-			exit(EXIT_FAILURE);
-		}
-		close(fd);
-	}
-}
-
 void	ft_output_redirection(t_command *cmd)
 {
 	int fd;
@@ -43,37 +22,6 @@ void	ft_output_redirection(t_command *cmd)
 		}
 		close(fd);
 	}
-}
-
-// Append redirection handler (do wyrzucenia bo oba ogarnięte w output)
-void ft_append_redirection(t_command *cmd)
-{
-    if (!cmd->append_file)
-        return;
-        
-    int fd = open(cmd->append_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-    if (fd < 0)
-    {
-        perror("open");
-        return;
-    }
-    
-    // Save original stdout
-    //int stdout_copy = dup(STDOUT_FILENO);
-    
-    // Redirect stdout to the file
-    if (dup2(fd, STDOUT_FILENO) < 0)
-    {
-        perror("dup2");
-        close(fd);
-        return;
-    }
-    
-    close(fd);
-    
-    // Note: After command execution, you'll need to restore stdout:
-    // dup2(stdout_copy, STDOUT_FILENO);
-    // close(stdout_copy);
 }
 
 void	ft_heredoc_redirection(t_command *cmd)
@@ -121,4 +69,52 @@ void	ft_heredoc_redirection(t_command *cmd)
     }
     close(fd);
     unlink(".heredoc_tmp");
+}
+
+void ft_input_redirection(t_command *cmd)
+{
+    int fd;
+    
+    if (!cmd->input_file)
+        return;
+        
+    fd = open(cmd->input_file, O_RDONLY);
+    if (fd < 0)
+    {
+        perror("Error opening input file");
+        return;
+    }
+    
+    if (dup2(fd, STDIN_FILENO) < 0)
+    {
+        perror("Error duplicating file descriptor");
+        close(fd);
+        return;
+    }
+    
+    close(fd);
+}
+
+void ft_append_redirection(t_command *cmd)
+{
+    int fd;
+    
+    if (!cmd->append_file)
+        return;
+        
+    fd = open(cmd->append_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
+    if (fd < 0)
+    {
+        perror("Error opening append file");
+        return;
+    }
+    
+    if (dup2(fd, STDOUT_FILENO) < 0)
+    {
+        perror("Error duplicating file descriptor");
+        close(fd);
+        return;
+    }
+    
+    close(fd);
 }
