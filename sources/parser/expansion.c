@@ -53,6 +53,35 @@ static int	handle_dollar_exp(char *str, int *i,char *result,int j,t_minishell *s
 	return j;
 }
 
+static size_t	calc_result_length(const char *str, t_minishell *shell)
+{
+	size_t	len;
+	size_t	i;
+	size_t	var_start;
+	char *val;
+	char	var_name[256];
+
+	len = 0;
+	i = 0;
+	while (str[i]){
+		if (str[i] == '$' && str[i+1]){
+			i++;
+			var_start = i;
+			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
+				i++;
+			ft_strlcpy(var_name, str + var_start, i - var_start + 1);
+			val = get_env_value(shell->env_list, var_name);
+			if(val)
+				len+= ft_strlen(val);
+		}
+		else {
+			len++;
+			i++;
+		}
+	}
+	return len;
+}
+
 char	*expand_variables(char *str, t_minishell *shell)
 {
 	char	*result;
@@ -61,7 +90,7 @@ char	*expand_variables(char *str, t_minishell *shell)
 
 	if(!str)
 	return NULL;
-	result = malloc(ft_strlen(str)*2 + 1);
+	result = malloc(calc_result_length(str,shell) + 1);
 	if(!result)
 		return NULL;
 	i = 0;

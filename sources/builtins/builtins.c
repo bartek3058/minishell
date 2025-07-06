@@ -2,21 +2,20 @@
 
 int	ft_echo(char **args)
 {
-	int i;
-	int n_flag;
+	char	*stripped;
+	int		i;
+	int		n_flag;
 	
 	i = 1;
-	n_flag = 0;
-	
-	if (args[i] && ft_strcmp(args[i], "-n") == 0)
-	{
+	n_flag = 0;	
+	if (args[i] && ft_strcmp(args[i], "-n") == 0){
 		n_flag = 1;
 		i++;
 	}
-	while (args[i])
-	{
-		args[i] = strip_quotes(args[i]);
-		ft_putstr_fd(args[i], 1);
+	while (args[i]){
+		stripped = strip_quotes(args[i]);
+		ft_putstr_fd(stripped, 1);
+		free(stripped);
 		if (args[i + 1]) // jesli jest nastepny argument dodaj spacje
 			write(1, " ", 1);
 		i++;

@@ -76,7 +76,7 @@ static void add_args_to_command(t_command *cmd, t_token **token, t_minishell *sh
 		else if (ft_strcmp(current->type, "VAR_WORD") == 0 && current->value)
 				cmd->args[i++] = expand_variables(current->value, shell);
         else if (is_builtin(current->type))
-            cmd->args[i++] = ft_strdup(current->value);
+            cmd->args[i++] = ft_strdup(current->type);
         current = current->next;
     }
     cmd->args[i] = NULL;
