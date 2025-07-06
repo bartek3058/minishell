@@ -80,7 +80,7 @@ char		*ft_strjoin(char const *s1, char const *s2);
 void		ft_builtins(t_minishell *shell, char **args);
 int			ft_cd(char **args);
 int			ft_echo(char **args);
-void		ft_exit(t_minishell *shell);
+void		ft_exit(t_minishell *shell, char **args);
 void		ft_pwd(void);
 int			ft_env(t_env *env);
 int			ft_unset(t_env **env_list, char **args);
@@ -96,20 +96,26 @@ void		ft_heredoc_redirection(t_command *cmd);
 //pipes
 void		ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2); // wykonuje polecenia w potoku
 
+//exec
+int			execute_command_chain(t_minishell *shell, t_command *cmd_list); // wykonuje lancuch polecen
+
 //utils_t
 int			execute_cmd(char *path, char **args, t_env *env_list); 	// wykonuje polecenie
 int			execute_command(t_minishell *shell, t_command *cmd); // sprawdza czy polecenie jest wbudowane i je wykonuje
 char		*check_path(char *cmd);			// sprawdza sciezke do polecenia
 int			is_builtin(char *cmd);
-int			execute_command_chain(t_minishell *shell, t_command *cmd_list); // wykonuje lancuch polecen
+int			return_error(char *origin, char *identifier, char *message);
 
 //utils_t_2
 char		**conv_env_to_array(t_env *env); // konwersja listy zmiennych srodowiskowych na tablice
 char		**tokens_to_args(t_token *token); // konwersja listy tokenow na tablice argumentow
-int			is_valid_var_or_assign(const char *str);
-int			is_valid_varname(const char *str);
 char		*get_env_value(t_env *env_list, char *key);
 
+//utils_validations
+int			is_valid_var_or_assign(const char *str);
+int			is_valid_varname(const char *str);
+int			is_numeric_string(const char *str);
+int			validate_numeric_arg(const char *str);
 
 //utils
 void		init_token(t_token **token);
@@ -118,6 +124,7 @@ char		*ft_strcat(char *dst, const char *src);
 void		parser_helper(t_token **token, char **args, int *i);
 int			is_redirect_or_pipe(char *arg);
 void		print_tokens(t_token *token); // wypisuje liste tokenow do konsoli (debugging)
+int			count_args(char **args);
 
 //clean-up
 void		free_args(char **args);   // zwalnia pamiec po tablicy argumentow

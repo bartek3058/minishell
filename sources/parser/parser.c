@@ -11,24 +11,21 @@ static void add_redirection_token(t_token **token, char **args, int *i, char *ty
 }
 static void handle_word_token(t_token **token, char **args, int *i)
 {
-	char	*stripped_word;
 	char	quote_type;
 	size_t	len;
 
 	quote_type = 0;
 	len = ft_strlen(args[*i]);
-	if (len >= 2){
-		if (args[*i][0] == '"' && args[*i][len - 1] == '"')
-			quote_type = '"';
-		else if (args[*i][0] == '\'' && args[*i][len - 1] == '\'')
+	if (ft_strchr(args[*i], '"') || ft_strchr(args[*i], '\'')){
+		if (len >= 2 && args[*i][0] == '\'' && args[*i][len - 1] == '\'')
 			quote_type = '\'';
+		else 
+			quote_type = '"';
 	}
-	stripped_word = strip_quotes(args[*i]);
-	if (quote_type == '\'' || !ft_strchr(stripped_word, '$')) //single quotes or not variable
-		add_token(token, "WORD", stripped_word);
+	if (quote_type == '\'' || !ft_strchr(args[*i], '$')) //single quotes or not variable
+		add_token(token, "WORD", args[*i]);
 	else
-		add_token(token, "VAR_WORD", stripped_word); // double quotes or unquoted variable
-	free(stripped_word);
+		add_token(token, "VAR_WORD", args[*i]); // double quotes or unquoted variable
 }
 
 static void handle_operator_token(t_token **token, char **args, int *i)

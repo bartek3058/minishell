@@ -83,46 +83,6 @@ char **tokens_to_args(t_token *token)
 	args[i] = NULL;
 	return args;
 }
-int	is_valid_var_or_assign(const char *str)
-{
-	char	*eq;
-	int		i;
-
-	if(!str)
-		return (0);
-	eq = ft_strchr(str, '=');
-	if (eq){
-		if (eq == str)
-			return (0);
-		i = 0;
-		while (&str[i] < eq)
-		{
-		if (i ==0 && !ft_isalpha(str[i]) && str[i] != '_')
-			return (0);
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return (0);
-		i++;
-		}
-		return (1);
-	}
-	else
-		return (is_valid_varname(str));
-}
-int	is_valid_varname(const char *str)
-{
-	int i;
-
-	if (!str || (!ft_isalpha(*str) && *str != '_'))
-		return 0;
-	i = 1;
-	while (str[i])
-	{
-		if (!ft_isalnum(str[i]) && str[i] != '_')
-			return 0;
-		i++;
-	}
-	return 1;
-}
 char *get_env_value(t_env *env_list, char *key)
 {
 	t_env	*current;

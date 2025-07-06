@@ -15,6 +15,7 @@ SRCS	=	./sources/minishell.c\
 					./sources/utils/utils_b.c\
 					./sources/utils/utils_t.c\
 					./sources/utils/utils_t_2.c\
+					./sources/utils/utils_validations.c\
 					./sources/utils/exec.c\
 					./sources/redirections.c\
 					./sources/pipes.c\
