@@ -61,3 +61,12 @@ void print_tokens(t_token *token)
         i++;
     }
 }
+int	count_args(char **args)
+{
+	int	i;
+
+	i = 1;
+	while(args[i])
+		i++;
+	return(i - 1);
+}

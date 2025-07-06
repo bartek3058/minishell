@@ -121,3 +121,13 @@ int	execute_command(t_minishell *shell, t_command *cmd)
     }
     return 0;
 }
+int return_error(char *origin, char *identifier, char *message)
+{
+    ft_putstr_fd(origin, 2);
+    ft_putstr_fd(": '", 2);
+    ft_putstr_fd(identifier, 2);
+    ft_putstr_fd("': ", 2);
+    ft_putstr_fd(message, 2);
+    ft_putstr_fd("\n", 2);
+    return (1);
+}
