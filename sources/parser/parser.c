@@ -52,8 +52,6 @@ void tokenize_input(char **args, t_token **token)
 {
 	int i = 0;
 
-
-
 	while (args[i])
 	{
 		if (is_redirect_or_pipe(args[i]))
@@ -61,13 +59,5 @@ void tokenize_input(char **args, t_token **token)
 		else
 			handle_word_token(token, args, &i);
 		i++;
-		//DEBUG
-		// if (*token){
-		// 	t_token *current = *token;
-		// 	while (current->next)
-		// 		current = current->next;
-		// 	printf("Token created: type='%s', value='%s'\n", current->type ? current->type : "NULL", current->value ? current->value : "NULL");
-		// }
-		//DEBUG
 	}
 }
