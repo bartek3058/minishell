@@ -52,20 +52,6 @@ static t_command *skip_pipe_sequence(t_command *current)
     return current;
 }
 
-// static int count_pipe_commands(t_command *start_cmd)
-// {
-//     t_command *current = start_cmd;
-//     int count = 0;
-    
-//     while (current && current->pipe_out)
-//     {
-//         count++;
-//         current = current->next;
-//     }
-//     count++; // Add final command
-    
-//     return count;
-// }
 static void setup_redirections(t_command *cmd)
 {
     if (cmd->input_file)
@@ -88,76 +74,48 @@ static int execute_single_command(t_minishell *shell, t_command *cmd)
     setup_redirections(cmd);
     
     // Check if builtin
-    if (is_builtin(cmd->args[0]))
-    {
+    if (is_builtin(cmd->args[0])){
         ft_builtins(shell, cmd->args);
         return shell->exit_status;
     }
-    else
-    {
+    else{
         return execute_command(shell, cmd);
     }
 }
-// static void setup_pipe_redirections(int pipes[][2], int cmd_index, int pipe_count)
-// {
-//     // Setup input redirection
-//     if (cmd_index > 0) // Not first command
-//     {
-//         dup2(pipes[cmd_index - 1][0], STDIN_FILENO);
-// 		close(pipes[cmd_index - 1][0]);
-//     }
-    
-//     // Setup output redirection  
-//     if (cmd_index < pipe_count - 1) // Not last command
-//     {
-//         dup2(pipes[cmd_index][1], STDOUT_FILENO);
-// 		close(pipes[cmd_index][1]);
-//     }
-    
-//     // Close all other pipe file descriptors
-//     for (int i = 0; i < pipe_count - 1; i++)
-//     {
-//         if (i != cmd_index - 1)
-// 			close(pipes[i][0]);
-//         if (i != cmd_index)
-// 			close(pipes[i][1]);
-//     }
-// }
-// static void close_all_pipes(int pipes[][2], int pipe_count)
-// {
-//     for (int i = 0; i < pipe_count; i++)
-//     {
-//         close(pipes[i][0]);
-//         close(pipes[i][1]);
-//     }
-// }
-// static int wait_for_children(pid_t *pids, int count)
-// {
-//     int status = 0;
-//     int last_status = 0;
-    
-//     for (int i = 0; i < count; i++)
-//     {
-//         waitpid(pids[i], &status, 0);
-//         if (i == count - 1) // Last command's exit status
-//             last_status = WEXITSTATUS(status);
-//     }
-    
-//     return last_status;
-// }
+
+
+
 static int execute_pipe_sequence(t_minishell *shell, t_command *start_cmd)
 {
-	t_command	*cmd1;
-	t_command	*cmd2;
+	int			pipe_count;
+	t_command	*current;
 
-	cmd1 = start_cmd;
-	cmd2 = start_cmd->next;
-	//for now, let's handle only 2-command pipes to debug
-	if(!cmd2)
-		return execute_single_command(shell, cmd1);
-	ft_execute_pipe(shell, cmd1, cmd2);
-	return shell->exit_status;
+	pipe_count = 0;
+	current = start_cmd;
+	// Count commands in pipe sequence
+	while (current && current->pipe_out)
+	{
+		pipe_count++;
+		current = current->next;
+	}
+	pipe_count++; // Add final command
+
+	if (pipe_count == 1)
+		return execute_single_command(shell, start_cmd);
+	else if (pipe_count == 2)
+	{
+		// Use existing 2-command pipe function
+		ft_execute_pipe(shell, start_cmd, start_cmd->next);
+		return shell->exit_status;
+	}
+	else
+	{
+		// Use new multiple pipe function
+		ft_execute_multiple_pipes(shell, start_cmd);
+		return shell->exit_status;
+	}
 }
+
 
 int execute_command_chain(t_minishell *shell, t_command *cmd_list)
 {
@@ -166,15 +124,12 @@ int execute_command_chain(t_minishell *shell, t_command *cmd_list)
 
 	while (current)
 	{
-		if (current->pipe_out)
-		{
+		if (current->pipe_out){
 			last_exit_status = execute_pipe_sequence(shell, current);
 			current = skip_pipe_sequence(current);
 		}
 		else
-		{
 			last_exit_status = execute_single_command(shell, current);
-		}
 
 		shell->exit_status = last_exit_status;
 		current = handle_logical_operators(current, last_exit_status);

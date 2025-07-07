@@ -53,7 +53,10 @@ static void add_args_to_command(t_command *cmd, t_token **token, t_minishell *sh
     while (current && current->type && 
 			(ft_strcmp(current->type, "WORD") == 0 || 
 			ft_strcmp(current->type, "VAR_WORD") == 0 ||
-			is_builtin(current->type))){
+			is_builtin(current->type)) &&
+			ft_strcmp(current->type, "|") != 0 &&
+			ft_strcmp(current->type, "&&") != 0 &&
+			ft_strcmp(current->type, "||") != 0){
         if ((ft_strcmp(current->type, "WORD") == 0 ||
 			ft_strcmp(current->type, "VAR_WORD") == 0) && current->value)
             arg_count++;
@@ -70,7 +73,10 @@ static void add_args_to_command(t_command *cmd, t_token **token, t_minishell *sh
     while (current && current->type && 
 			(ft_strcmp(current->type, "WORD") == 0 || 
 			ft_strcmp(current->type, "VAR_WORD") == 0 ||
-			is_builtin(current->type))){
+			is_builtin(current->type)) &&
+			ft_strcmp(current->type, "|") != 0 &&
+			ft_strcmp(current->type, "&&") != 0 &&
+			ft_strcmp(current->type, "||") != 0){
         if (ft_strcmp(current->type, "WORD") == 0 && current->value)
             cmd->args[i++] = ft_strdup(current->value);
 		else if (ft_strcmp(current->type, "VAR_WORD") == 0 && current->value)
@@ -156,35 +162,59 @@ static int is_operator_token(t_token *token)
             ft_strcmp(token->type, "&&") == 0 ||
             ft_strcmp(token->type, "||") == 0);
 }
-static t_token *process_single_token(t_command *current_cmd, t_token *token, t_minishell *shell)
-{
-    if (is_command_token(token))
-        return handle_command_token(current_cmd, token, shell);
-    else if (is_redirection_token(token))
-        return handle_redirection_token(current_cmd, token);
-    else if (is_operator_token(token))
-        return handle_operator_token(current_cmd, token);
-    else
-        return token->next;
-}
+// static t_token *process_single_token(t_command *current_cmd, t_token *token, t_minishell *shell)
+// {
+//     if (is_command_token(token))
+//         return handle_command_token(current_cmd, token, shell);
+//     else if (is_redirection_token(token))
+//         return handle_redirection_token(current_cmd, token);
+//     else if (is_operator_token(token))
+//         return handle_operator_token(current_cmd, token);
+//     else
+//         return token->next;
+// }
 
 t_command *parse_command_chain(t_token *tokens, t_minishell *shell)
 {
-    t_command *cmd_list = NULL;
-    t_command *current_cmd = NULL;
-    t_token *token = tokens;
-    
-    while (token)
-    {
-        if (!current_cmd)
-        {
-            current_cmd = create_new_command();
-            if (!cmd_list)
-                cmd_list = current_cmd;
-        }
-        token = process_single_token(current_cmd, token, shell);
-        if (!token)
-            break;
-    }
-    return cmd_list;
+	t_command	*cmd_list;
+	t_command	*current_cmd;
+	t_command	*last_cmd;
+	t_token		*token;
+
+	cmd_list = NULL;
+	current_cmd = NULL;
+	last_cmd = NULL;
+	token = tokens;
+	while (token)
+	{
+		if (!current_cmd)
+		{
+			current_cmd = create_new_command();
+			if (!cmd_list)
+				cmd_list = current_cmd;
+			else
+				last_cmd->next = current_cmd;
+		}
+
+		//process tokens for current command
+		if (is_command_token(token))
+			token = handle_command_token(current_cmd, token, shell);
+		else if (is_redirection_token(token))
+			token = handle_redirection_token(current_cmd, token);
+		else if (ft_strcmp(token->type, "|") == 0){
+			//Finalize current command and prepare for next
+			current_cmd->pipe_out = 1;
+			last_cmd = current_cmd;
+			current_cmd = NULL; // Force creation of new command
+			token = token->next;
+		}
+		else if (is_operator_token(token)){
+			token = handle_operator_token(current_cmd, token);
+			last_cmd = current_cmd;
+			current_cmd = NULL;
+		}
+		else
+			token = token->next;
+	}
+	return cmd_list;
 }

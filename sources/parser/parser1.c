@@ -17,6 +17,9 @@ void add_token(t_token **head, char *type, char *value)
 	else
 		new_token->value = NULL;
 	new_token->next = NULL;
+	//DEBUG here
+
+	//DEBUG
 	if (*head == NULL)
 		*head = new_token;
 	else {

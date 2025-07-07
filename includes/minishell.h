@@ -95,6 +95,7 @@ void		ft_heredoc_redirection(t_command *cmd);
 
 //pipes
 void		ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2); // wykonuje polecenia w potoku
+void		ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd);
 
 //exec
 int			execute_command_chain(t_minishell *shell, t_command *cmd_list); // wykonuje lancuch polecen
