@@ -2,88 +2,82 @@
 
 static t_command *handle_and_operator(t_command *current, int exit_status)
 {
-    if (exit_status != 0)
-    {
-        // Skip next command if current failed
-        current = current->next;
-        if (current)
-            current = current->next;
-        return current;
-    }
-    return current->next;
+	if (exit_status != 0)
+	{
+		// Skip next command if current failed
+		current = current->next;
+		if (current)
+			current = current->next;
+		return current;
+	}
+	return current->next;
 }
 
 static t_command *handle_or_operator(t_command *current, int exit_status)
 {
-    if (exit_status == 0)
-    {
-        // Skip next command if current succeeded
-        current = current->next;
-        if (current)
-            current = current->next;
-        return current;
-    }
-    return current->next;
+	if (exit_status == 0)
+	{
+		// Skip next command if current succeeded
+		current = current->next;
+		if (current)
+			current = current->next;
+		return current;
+	}
+	return current->next;
 }
 
 // Logical Operator Handler
 static t_command *handle_logical_operators(t_command *current, int exit_status)
 {
-    if (!current)
-        return NULL;
-        
-    if (current->logical_op == 1) // &&
-        return handle_and_operator(current, exit_status);
-    else if (current->logical_op == 2) // ||
-        return handle_or_operator(current, exit_status);
-    else
-        return current->next;
+	if (!current)
+		return NULL;
+
+	if (current->logical_op == 1) // &&
+		return handle_and_operator(current, exit_status);
+	else if (current->logical_op == 2) // ||
+		return handle_or_operator(current, exit_status);
+	else
+		return current->next;
 }
 
 // pipe sequence helpers
 static t_command *skip_pipe_sequence(t_command *current)
 {
-    while (current && current->pipe_out)
-        current = current->next;
-    
-    if (current)
-        current = current->next;
-    
-    return current;
+	while (current && current->pipe_out)
+		current = current->next;
+	if (current)
+		current = current->next;
+	return current;
 }
 
-static void setup_redirections(t_command *cmd)
+void	setup_redirections(t_command *cmd)
 {
-    if (cmd->input_file)
-        ft_input_redirection(cmd);
-    else if (cmd->heredoc)
-        ft_heredoc_redirection(cmd);
-        
-    if (cmd->append_file)
-        ft_append_redirection(cmd);
-    else if (cmd->output_file)
-        ft_output_redirection(cmd);
+	if (!cmd)
+		return;
+	if (cmd->input_file)
+		ft_input_redirection(cmd);
+	if (cmd->heredoc)
+		ft_heredoc_redirection(cmd);
+	if (cmd->output_file || cmd->append_file)
+		ft_output_redirection(cmd);
 }
 
 static int execute_single_command(t_minishell *shell, t_command *cmd)
 {
-    if (!cmd || !cmd->args || !cmd->args[0])
-        return 1;
-    
-    // Setup redirections
-    setup_redirections(cmd);
-    
-    // Check if builtin
-    if (is_builtin(cmd->args[0])){
-        ft_builtins(shell, cmd->args);
-        return shell->exit_status;
-    }
-    else{
-        return execute_command(shell, cmd);
-    }
+	if (!cmd || !cmd->args || !cmd->args[0])
+		return 1;
+
+	// Check if builtin
+	if (is_builtin(cmd->args[0]))
+	{
+		ft_builtins(shell, cmd->args);
+		return shell->exit_status;
+	}
+	else
+	{
+		return execute_command(shell, cmd);
+	}
 }
-
-
 
 static int execute_pipe_sequence(t_minishell *shell, t_command *start_cmd)
 {

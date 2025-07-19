@@ -13,12 +13,13 @@ void	ft_output_redirection(t_command *cmd)
 		if (fd < 0)
 		{
 			perror("Error opening output file");
-			exit(EXIT_FAILURE);
+			exit(1);
 		}
 		if (dup2(fd, STDOUT_FILENO) < 0)
 		{
 			perror("Error duplicating file descriptor");
-			exit(EXIT_FAILURE);
+			close(fd);
+			exit(1);
 		}
 		close(fd);
 	}

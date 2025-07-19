@@ -99,6 +99,7 @@ void		ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd);
 
 //exec
 int			execute_command_chain(t_minishell *shell, t_command *cmd_list); // wykonuje lancuch polecen
+void		setup_redirections(t_command *cmd);
 
 //utils_t
 int			execute_cmd(char *path, char **args, t_env *env_list); 	// wykonuje polecenie
@@ -136,10 +137,10 @@ void		cleanup_and_return(char **args, char *line, t_token *token); // zwalnia pa
 
 //parser
 t_command	*parse_command_chain(t_token *tokens, t_minishell *shell);
-char		*redirect_output_helper(char **argv);
-char		*redirect_input_helper(char **argv);
-char		*redirect_double_output_helper(char **argv);
-char		*redirect_double_input_helper(char **argv);
+// char		*redirect_output_helper(char **argv);
+// char		*redirect_input_helper(char **argv);
+// char		*redirect_double_output_helper(char **argv);
+// char		*redirect_double_input_helper(char **argv);
 void		add_token(t_token **head, char *key, char *value);
 void		tokenize_input(char **args, t_token **token);
 

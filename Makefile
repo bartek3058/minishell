@@ -23,7 +23,6 @@ SRCS	=	./sources/minishell.c\
 					./sources/init.c\
 					./sources/parser/parser.c\
 					./sources/parser/parser1.c\
-					./sources/parser/parser2.c\
 					./sources/parser/token_proc.c\
 					./sources/parser/expansion.c\
 					./sources/parser/smart_split.c
