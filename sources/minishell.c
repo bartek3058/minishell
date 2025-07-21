@@ -73,8 +73,8 @@ void free_command_list(t_command *cmd_list)
         next = current->next;
         if (current->args)
             free_args(current->args);
-        if (current->input_file)
-            free(current->input_file);
+        if (current->input_files)
+            free(current->input_files);
         if (current->output_file)
             free(current->output_file);
         if (current->append_file)

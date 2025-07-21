@@ -74,26 +74,43 @@ void	ft_heredoc_redirection(t_command *cmd)
 
 void ft_input_redirection(t_command *cmd)
 {
-    int fd;
-    
-    if (!cmd->input_file)
-        return;
-        
-    fd = open(cmd->input_file, O_RDONLY);
-    if (fd < 0)
-    {
-        perror("Error opening input file");
-        return;
-    }
-    
-    if (dup2(fd, STDIN_FILENO) < 0)
-    {
-        perror("Error duplicating file descriptor");
-        close(fd);
-        return;
-    }
-    
-    close(fd);
+	int	fd;
+	int	i;
+
+	fd = -1;
+	i = 0;
+	if (!cmd->input_files || cmd->input_file_count == 0)
+		return;
+	while (i < cmd->input_file_count)
+	{
+
+		//DEBUG
+		printf("Opening file %s\n", cmd->input_files[i]);
+		//END DEBUG
+		fd = open(cmd->input_files[i], O_RDONLY);
+		//DEBUG
+		printf("Opened file %s\n", cmd->input_files[i]);
+		//END DEBUG
+		if (fd < 0)
+		{
+			perror(cmd->input_files[i]);
+			printf("Error opening %s, exiting with 1\n", cmd->input_files[i]);
+			exit(1);
+		}
+		if (i < cmd->input_file_count - 1)
+			close(fd);
+		i++;
+	}
+	if (fd >= 0)
+	{
+		if (dup2(fd, STDIN_FILENO) < 0)
+		{
+			perror("Error duplicating file descriptor");
+			close(fd);
+			exit(1);
+		}
+		close(fd);
+	}
 }
 
 void ft_append_redirection(t_command *cmd)
@@ -107,14 +124,14 @@ void ft_append_redirection(t_command *cmd)
     if (fd < 0)
     {
         perror("Error opening append file");
-        return;
+        exit(1);
     }
     
     if (dup2(fd, STDOUT_FILENO) < 0)
     {
         perror("Error duplicating file descriptor");
         close(fd);
-        return;
+        exit(1);
     }
     
     close(fd);

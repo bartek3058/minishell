@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void add_redirection_token(t_token **token, char **args, int *i, char *type)
+static void	add_redirection_token(t_token **token, char **args, int *i, char *type)
 {
 	char	*arg;
 	char	*filename;
@@ -23,9 +23,11 @@ static void add_redirection_token(t_token **token, char **args, int *i, char *ty
 	{
 		//Normal case (space after redir token)
 		add_token(token, type, NULL);
-		(*i)++;
-		if (args[*i])
-			add_token(token, "WORD", args[*i]);
+		if (args[*i + 1]){
+			add_token(token, "WORD", args[*i + 1]);
+			(*i)++;
+			(*i)++;
+		}
 	}
 }
 static void handle_word_token(t_token **token, char **args, int *i)
@@ -58,7 +60,7 @@ static int	starts_with_redirect(char *arg)
 	return(0);
 }
 
-static void handle_operator_token(t_token **token, char **args, int *i)
+static void	handle_operator_token(t_token **token, char **args, int *i)
 {
 	int	redirect_len;
 	
@@ -86,18 +88,52 @@ static void handle_operator_token(t_token **token, char **args, int *i)
 		add_token(token, "||", NULL);
 	else
 		handle_word_token(token, args, i);
+	return;
 }
 
 void tokenize_input(char **args, t_token **token)
 {
-	int i = 0;
+	int	i;
+	int	old_i;
 
+	i = 0;
+	// DEBUG
+	// int j = 0;
+	// printf("DEBUG: Tokenizing input with %d args:\n", count_args(args)+1);
+	// while (args[j]){
+	// 	printf("  args[%d] = '%s'\n", j, args[j]);
+	// 	j++;
+	// }
+	// END DEBUG
 	while (args[i])
 	{
-		if (is_redirect_or_pipe(args[i]))
+		//DEBUG
+		// printf("DEBUG: Processing token %d: '%s'\n", i, args[i]);
+		//END DEBUG
+		old_i = i;
+		//DEBUG
+		// printf("i: %d\n", i);
+		//END DEBUG
+		if (is_redirect_or_pipe(args[i])){
+			//DEBUG
+			// return_error("tokenize_input", args[i], "redirect or pipe");
+			// printf("i (before handle operator token): %d\n", i);
+			//END DEBUG
 			handle_operator_token(token, args, &i);
-		else
+			//DEBUG
+			// printf("i (after handle operator token): %d\n", i);
+			//END DEBUG
+		}
+		else{
 			handle_word_token(token, args, &i);
-		i++;
+		}
+		//DEBUG
+		// printf("i: %d, old_i: %d\n", i, old_i);
+		//END DEBUG
+		if (i == old_i)
+			i++;
+		//DEBUG
+		// printf("(after old_i increment) i: %d, old_i: %d\n", i, old_i);
+		//END DEBUG
 	}
 }

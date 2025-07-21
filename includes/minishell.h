@@ -34,7 +34,7 @@ typedef struct s_env
 typedef struct s_command
 {
 	char	**args; // argumenty polecenia (args[0] to nazwa polecenia)
-	char	*input_file; // plik wejsciowy (< file)
+	char	**input_files; // plik wejsciowy (< file), tablica plików wejściowych dla wielu redirekcji
 	char	*output_file; // plik wyjsciowy (> file)
 	char	*append_file; // plik do dopisania (>> file)
 	char	*heredoc; // heredoc delimiter (<<)
@@ -42,6 +42,7 @@ typedef struct s_command
 	int		pipe_out; // czy polecenie ma byc wyslane do potoku (1 jeśli tak, 0 jeśli nie)
 	struct	s_command *next; // wskaznik na nastepne polecenie (potok)
 	int		pipe_fd[2]; // deskryptory potokow
+	int		input_file_count; // jeśli chcemy obsłużyć wiele redirekcji
 	pid_t	pid; // PID procesu wykonujacego polecenie
 }	t_command;
 

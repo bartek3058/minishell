@@ -54,8 +54,13 @@ void	setup_redirections(t_command *cmd)
 {
 	if (!cmd)
 		return;
-	if (cmd->input_file)
+	if (cmd->input_files && cmd->input_file_count > 0)
+	{
+		//DEBUG
+		printf("Getting to ft_input redirection\n");
+		//END DEBUG	
 		ft_input_redirection(cmd);
+	}
 	if (cmd->heredoc)
 		ft_heredoc_redirection(cmd);
 	if (cmd->output_file || cmd->append_file)
