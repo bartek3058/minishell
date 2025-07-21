@@ -34,7 +34,7 @@ typedef struct s_env
 typedef struct s_command
 {
 	char	**args; // argumenty polecenia (args[0] to nazwa polecenia)
-	char	*input_file; // plik wejsciowy (< file)
+	char	**input_files; // plik wejsciowy (< file), tablica plików wejściowych dla wielu redirekcji
 	char	*output_file; // plik wyjsciowy (> file)
 	char	*append_file; // plik do dopisania (>> file)
 	char	*heredoc; // heredoc delimiter (<<)
@@ -42,6 +42,7 @@ typedef struct s_command
 	int		pipe_out; // czy polecenie ma byc wyslane do potoku (1 jeśli tak, 0 jeśli nie)
 	struct	s_command *next; // wskaznik na nastepne polecenie (potok)
 	int		pipe_fd[2]; // deskryptory potokow
+	int		input_file_count; // jeśli chcemy obsłużyć wiele redirekcji
 	pid_t	pid; // PID procesu wykonujacego polecenie
 }	t_command;
 
@@ -99,6 +100,7 @@ void		ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd);
 
 //exec
 int			execute_command_chain(t_minishell *shell, t_command *cmd_list); // wykonuje lancuch polecen
+void		setup_redirections(t_command *cmd);
 
 //utils_t
 int			execute_cmd(char *path, char **args, t_env *env_list); 	// wykonuje polecenie
@@ -136,10 +138,10 @@ void		cleanup_and_return(char **args, char *line, t_token *token); // zwalnia pa
 
 //parser
 t_command	*parse_command_chain(t_token *tokens, t_minishell *shell);
-char		*redirect_output_helper(char **argv);
-char		*redirect_input_helper(char **argv);
-char		*redirect_double_output_helper(char **argv);
-char		*redirect_double_input_helper(char **argv);
+// char		*redirect_output_helper(char **argv);
+// char		*redirect_input_helper(char **argv);
+// char		*redirect_double_output_helper(char **argv);
+// char		*redirect_double_input_helper(char **argv);
 void		add_token(t_token **head, char *key, char *value);
 void		tokenize_input(char **args, t_token **token);
 
