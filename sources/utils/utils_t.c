@@ -98,7 +98,8 @@ static void	execute_child_process(t_minishell *shell, t_command *cmd)
 	char	*path;
 	char	**envp;
 	
-	setup_redirections(cmd);
+	if (setup_redirections(cmd) < 0)
+		exit(1);
 	path = check_path(cmd->args[0]);
 	if (!path)
 	{

@@ -50,32 +50,55 @@ static t_command *skip_pipe_sequence(t_command *current)
 	return current;
 }
 
-void	setup_redirections(t_command *cmd)
+int	setup_redirections(t_command *cmd)
 {
 	if (!cmd)
-		return;
+		return 0;
 	if (cmd->input_files && cmd->input_file_count > 0)
 	{
 		//DEBUG
-		printf("Getting to ft_input redirection\n");
+		// printf("Getting to ft_input redirection\n");
 		//END DEBUG	
-		ft_input_redirection(cmd);
+		if (ft_input_redirection(cmd) < 0)
+			return -1;
 	}
 	if (cmd->heredoc)
 		ft_heredoc_redirection(cmd);
-	if (cmd->output_file || cmd->append_file)
-		ft_output_redirection(cmd);
+	if (cmd->output_file || cmd->append_file){
+		if(ft_output_redirection(cmd) < 0)
+			return -1;
+	}
+	return 0;
 }
 
 static int execute_single_command(t_minishell *shell, t_command *cmd)
 {
+	int	stdin_copy;
+	int	stdout_copy;
+	
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return 1;
 
+		
 	// Check if builtin
 	if (is_builtin(cmd->args[0]))
 	{
+		stdin_copy = dup(STDIN_FILENO);
+		stdout_copy = dup(STDOUT_FILENO);
+		if (setup_redirections(cmd) < 0)
+		{
+			dup2(stdin_copy, STDIN_FILENO);
+			dup2(stdout_copy, STDOUT_FILENO);
+			close(stdin_copy);
+			close(stdout_copy);
+			shell->exit_status = 1;
+			return 1;
+		}
 		ft_builtins(shell, cmd->args);
+		dup2(stdin_copy, STDIN_FILENO);
+		dup2(stdout_copy, STDOUT_FILENO);
+		close(stdin_copy);
+		close(stdout_copy);
 		return shell->exit_status;
 	}
 	else
