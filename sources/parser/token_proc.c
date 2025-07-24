@@ -147,7 +147,7 @@ static t_token	*handle_logical_or(t_command *current_cmd, t_token *token)
 // }
 static void	handle_redirection(t_command *cmd, t_token **token)
 {
-	t_token *current;
+	t_token	*current;
 
 	current = *token;
 	if (!current || !current->type){
@@ -174,7 +174,7 @@ static void	handle_redirection(t_command *cmd, t_token **token)
 			// 	free(cmd->input_file);
 			// 	cmd->input_file_count = 0;
 			// }
-			cmd->input_files[cmd->input_file_count] = ft_strdup(current->next->value);
+			cmd->input_files[cmd->input_file_count] = strip_quotes(current->next->value);
 			cmd->input_file_count++;
 			//DEBUG
 			// printf("Input_file: %s\n", cmd->input_file);
@@ -194,7 +194,7 @@ static void	handle_redirection(t_command *cmd, t_token **token)
 		{
 			if (cmd->output_file)
 				free(cmd->output_file);
-			cmd->output_file = ft_strdup(current->next->value);
+			cmd->output_file = strip_quotes(current->next->value);
 			*token = current->next->next;
 		}
 		else
@@ -206,7 +206,7 @@ static void	handle_redirection(t_command *cmd, t_token **token)
 		{
 			if (cmd->append_file)
 				free(cmd->append_file);
-			cmd->append_file = ft_strdup(current->next->value);
+			cmd->append_file = strip_quotes(current->next->value);
 			*token = current->next->next;
 		}
 		else
@@ -218,7 +218,7 @@ static void	handle_redirection(t_command *cmd, t_token **token)
 		{
 			if(cmd->heredoc)
 				free(cmd->heredoc);
-			cmd->heredoc = ft_strdup(current->next->value);
+			cmd->heredoc = strip_quotes(current->next->value);
 			*token = current->next->next;
 		}
 		else

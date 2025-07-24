@@ -89,8 +89,8 @@ int			ft_export(t_minishell *shell, char **args);
 char		*strip_quotes(const char *str);
 
 //redirections
-void		ft_input_redirection(t_command *cmd);
-void		ft_output_redirection(t_command *cmd);
+int 		ft_input_redirection(t_command *cmd);
+int			ft_output_redirection(t_command *cmd);
 void		ft_append_redirection(t_command *cmd);
 void		ft_heredoc_redirection(t_command *cmd);
 
@@ -100,7 +100,7 @@ void		ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd);
 
 //exec
 int			execute_command_chain(t_minishell *shell, t_command *cmd_list); // wykonuje lancuch polecen
-void		setup_redirections(t_command *cmd);
+int			setup_redirections(t_command *cmd);
 
 //utils_t
 int			execute_cmd(char *path, char **args, t_env *env_list); 	// wykonuje polecenie

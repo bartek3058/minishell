@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-void	ft_output_redirection(t_command *cmd)
+int	ft_output_redirection(t_command *cmd)
 {
 	int fd;
 
@@ -13,16 +13,17 @@ void	ft_output_redirection(t_command *cmd)
 		if (fd < 0)
 		{
 			perror("Error opening output file");
-			exit(1);
+			return(-1);
 		}
 		if (dup2(fd, STDOUT_FILENO) < 0)
 		{
 			perror("Error duplicating file descriptor");
 			close(fd);
-			exit(1);
+			return(-1);
 		}
 		close(fd);
 	}
+	return (0);
 }
 
 void	ft_heredoc_redirection(t_command *cmd)
@@ -72,30 +73,35 @@ void	ft_heredoc_redirection(t_command *cmd)
     unlink(".heredoc_tmp");
 }
 
-void ft_input_redirection(t_command *cmd)
+int ft_input_redirection(t_command *cmd)
 {
 	int	fd;
 	int	i;
 
 	fd = -1;
 	i = 0;
+	//DEBUG
+	// printf("Input files:\n");
+	// for (int i = 0; i < cmd->input_file_count; i++)
+	// 	printf("  [%d]: %s\n", i, cmd->input_files[i]);
+	//END DEBUG
 	if (!cmd->input_files || cmd->input_file_count == 0)
-		return;
+		return 0;
 	while (i < cmd->input_file_count)
 	{
 
 		//DEBUG
-		printf("Opening file %s\n", cmd->input_files[i]);
+		// printf("Opening file %s\n", cmd->input_files[i]);
 		//END DEBUG
 		fd = open(cmd->input_files[i], O_RDONLY);
 		//DEBUG
-		printf("Opened file %s\n", cmd->input_files[i]);
+		// printf("Opened file %s\n", cmd->input_files[i]);
 		//END DEBUG
 		if (fd < 0)
 		{
 			perror(cmd->input_files[i]);
-			printf("Error opening %s, exiting with 1\n", cmd->input_files[i]);
-			exit(1);
+			//printf("Error opening %s, exiting with 1\n", cmd->input_files[i]);
+			return(-1);
 		}
 		if (i < cmd->input_file_count - 1)
 			close(fd);
@@ -107,10 +113,11 @@ void ft_input_redirection(t_command *cmd)
 		{
 			perror("Error duplicating file descriptor");
 			close(fd);
-			exit(1);
+			return(-1);
 		}
 		close(fd);
 	}
+	return 0;
 }
 
 void ft_append_redirection(t_command *cmd)
