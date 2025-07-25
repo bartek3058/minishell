@@ -242,11 +242,11 @@ static t_token	*handle_command_token(t_command *cmd, t_token *token, t_minishell
 	if (i >= 255)
 		return token->next;
 	if (ft_strcmp(token->type, "WORD") == 0 && token->value)
-		cmd->args[i] = ft_strdup(token->value);
+		cmd->args[i] = strip_quotes(token->value);
 	else if (ft_strcmp(token->type, "VAR_WORD") == 0 && token->value)
 		cmd->args[i] = expand_variables(token->value, shell);
 	else if (is_builtin(token->type))
-		cmd->args[i] = ft_strdup(token->type);
+		cmd->args[i] = strip_quotes(token->type);
 	cmd->args[i + 1] = NULL;
 	return token->next;
 }
