@@ -102,6 +102,8 @@ int	ft_cd(char **args)
 
 void	ft_builtins(t_minishell *shell, char **args)
 {
+	int	exit_code;
+	
 	if (!args || !args[0])
 		return;
 	if (ft_strcmp(args[0], "pwd") == 0)
@@ -111,18 +113,37 @@ void	ft_builtins(t_minishell *shell, char **args)
 //		shell->running = 0; // ustawienie flagi do zakonczenia petli
 	}
 	else if (ft_strcmp(args[0], "echo") == 0)
-		shell->exit_status = ft_echo(args); // pass args after "echo"
+	{
+		exit_code = ft_echo(args);
+		if(shell)
+			shell->exit_status = exit_code;
+	}
 	else if (ft_strcmp(args[0], "cd") == 0)
-		shell->exit_status = ft_cd(args); // pass args after "cd"
+	{
+		if (shell)
+			shell->exit_status = ft_cd(args); 
+	}
 	else if (ft_strcmp(args[0], "env") == 0)
-		shell->exit_status = ft_env(shell->env_list);
+	{
+		if (shell)
+			shell->exit_status = ft_env(shell->env_list);
+	}
 	else if (ft_strcmp(args[0], "export") == 0)
-		shell->exit_status = ft_export(shell, args);
+	{
+		if(shell)
+			shell->exit_status = ft_export(shell, args);
+	}
 	else if (ft_strcmp(args[0], "unset") == 0)
-		shell->exit_status = ft_unset(&(shell->env_list), args); // pass args
+	{
+		if(shell)
+			shell->exit_status = ft_unset(&(shell->env_list), args); // pass args
+	}
 	else
 	{
-		fprintf(stderr, "minishell: %s: command not found\n", args[0]);
-		shell->exit_status = 127; // command not found
+		if (shell)
+		{
+			fprintf(stderr, "minishell: %s: command not found\n", args[0]);
+			shell->exit_status = 127; // command not found
+		}
 	}
 }
