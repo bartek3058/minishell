@@ -84,6 +84,8 @@ static void	execute_child_command(t_command *cmd, t_minishell *shell)
 	char	*path;
 	char	**envp;
 
+	if (setup_redirections(cmd) < 0)
+		exit(1);
 	envp = conv_env_to_array(shell->env_list);
 	if (is_builtin(cmd->args[0])){
 		ft_builtins(shell, cmd->args);
@@ -160,12 +162,29 @@ static void	ft_pipe_redirection(int *pipefd, int is_first_cmd)
 
 static void	ft_pipe_child(int pipefd[2], int is_first_cmd, t_command *cmd, char **envp)
 {
-    ft_pipe_redirection(pipefd, is_first_cmd);
-    char *path = check_path(cmd->args[0]);
-    if (path)
-        execve(path, cmd->args, envp);
-    perror("execve");
-    exit(EXIT_FAILURE);
+	char	*path;
+	
+	// first: pipe redirections
+	ft_pipe_redirection(pipefd, is_first_cmd);
+	// then: file redirections
+	if (setup_redirections(cmd) < 0)
+		exit(1);
+	// builtins in pipe:
+	if (is_builtin(cmd->args[0]))
+	{
+		ft_builtins(NULL, cmd->args);
+		exit(0);
+	}
+	// last: external commands
+	path = check_path(cmd->args[0]);
+	if (!path)
+	{
+		perror("command not found");
+		exit(127);
+	}
+	execve(path, cmd->args, envp);
+	perror("execve");
+	exit(EXIT_FAILURE);
 }
 
 void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2)
