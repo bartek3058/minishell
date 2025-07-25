@@ -16,8 +16,10 @@ t_command	*create_new_command(void)
 	cmd->args[0] = NULL;
 	cmd->input_files = malloc(sizeof(char *) * 16);
 	cmd->input_file_count = 0;
-	cmd->output_file = NULL;
-	cmd->append_file = NULL;
+	cmd->output_files = malloc(sizeof(char *) * 16);
+	cmd->output_file_count = 0;
+	cmd->append_files = malloc(sizeof(char *) * 16);
+	cmd->append_file_count = 0;
 	cmd->heredoc = NULL;
 	cmd->logical_op = 0;
 	cmd->pipe_out = 0;
@@ -192,9 +194,8 @@ static void	handle_redirection(t_command *cmd, t_token **token)
 	{
 		if (current->next && current->next->value)
 		{
-			if (cmd->output_file)
-				free(cmd->output_file);
-			cmd->output_file = strip_quotes(current->next->value);
+			cmd->output_files[cmd->output_file_count] = strip_quotes(current->next->value);
+			cmd->output_file_count++;
 			*token = current->next->next;
 		}
 		else
@@ -204,9 +205,8 @@ static void	handle_redirection(t_command *cmd, t_token **token)
 	{
 		if (current->next && current->next->value)
 		{
-			if (cmd->append_file)
-				free(cmd->append_file);
-			cmd->append_file = strip_quotes(current->next->value);
+			cmd->append_files[cmd->append_file_count] = strip_quotes(current->next->value);
+			cmd->append_file_count++;
 			*token = current->next->next;
 		}
 		else

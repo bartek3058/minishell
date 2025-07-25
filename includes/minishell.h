@@ -35,14 +35,16 @@ typedef struct s_command
 {
 	char	**args; // argumenty polecenia (args[0] to nazwa polecenia)
 	char	**input_files; // plik wejsciowy (< file), tablica plików wejściowych dla wielu redirekcji
-	char	*output_file; // plik wyjsciowy (> file)
-	char	*append_file; // plik do dopisania (>> file)
+	char	**output_files; // plik wyjsciowy (> file), tablica plików wyjściowych dla wielu redirekcji
+	char	**append_files; // plik do dopisania (>> file), tablica plików wyjściowych dla wielu redirekcji
 	char	*heredoc; // heredoc delimiter (<<)
 	int		logical_op; // operator logiczny (&&, ||)
 	int		pipe_out; // czy polecenie ma byc wyslane do potoku (1 jeśli tak, 0 jeśli nie)
 	struct	s_command *next; // wskaznik na nastepne polecenie (potok)
 	int		pipe_fd[2]; // deskryptory potokow
 	int		input_file_count; // jeśli chcemy obsłużyć wiele redirekcji
+	int		output_file_count; // jeśli chcemy obsłużyć wiele redirekcji
+	int		append_file_count; // jeśli chcemy obsłużyć wiele redirekcji
 	pid_t	pid; // PID procesu wykonujacego polecenie
 }	t_command;
 
@@ -91,7 +93,7 @@ char		*strip_quotes(const char *str);
 //redirections
 int 		ft_input_redirection(t_command *cmd);
 int			ft_output_redirection(t_command *cmd);
-void		ft_append_redirection(t_command *cmd);
+int			ft_append_redirection(t_command *cmd);
 void		ft_heredoc_redirection(t_command *cmd);
 
 //pipes

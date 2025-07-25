@@ -64,9 +64,15 @@ int	setup_redirections(t_command *cmd)
 	}
 	if (cmd->heredoc)
 		ft_heredoc_redirection(cmd);
-	if (cmd->output_file || cmd->append_file){
-		if(ft_output_redirection(cmd) < 0)
-			return -1;
+	if (cmd->output_files && cmd->output_file_count > 0)
+	{
+		if (ft_output_redirection(cmd) < 0)
+			return (-1);
+	}
+	if (cmd->append_files && cmd->append_file_count > 0)
+	{
+		if (ft_append_redirection(cmd) < 0)
+			return (-1);
 	}
 	return 0;
 }

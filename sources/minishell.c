@@ -75,10 +75,10 @@ void free_command_list(t_command *cmd_list)
             free_args(current->args);
         if (current->input_files)
             free(current->input_files);
-        if (current->output_file)
-            free(current->output_file);
-        if (current->append_file)
-            free(current->append_file);
+        if (current->output_files)
+            free(current->output_files);
+        if (current->append_files)
+            free(current->append_files);
         if (current->heredoc)
             free(current->heredoc);
         free(current);
