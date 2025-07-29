@@ -58,6 +58,7 @@ int main(int argc, char **argv, char **envp)
 	init_minishell(&shell,envp, &token); // inicjalizacja zmiennych, w tym zmiennych srodowiskowych (envp)
 	minishell_loop(&shell, args, &token); // glowna petla programu
 	free_env(shell.env_list); // zwolnienie pamieci po zmiennych srodowiskowych
+	
 	return (0);
 }
 

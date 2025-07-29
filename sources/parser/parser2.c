@@ -100,3 +100,41 @@
 // 		return(new_argv);
 // 		}
 // }
+
+int	is_operator_token(t_token *token)
+{
+	if (!token || !token->type)
+		return 0;
+	return (ft_strcmp(token->type, "|") == 0 ||
+			ft_strcmp(token->type, "&&") == 0 ||
+			ft_strcmp(token->type, "||") == 0);
+}
+t_token	*handle_redirection_token(t_command *cmd, t_token *token)
+{
+	handle_redirection(cmd, &token);
+	return token;
+}
+t_token	*handle_operator_token(t_command *current_cmd, t_token *token)
+{
+	if (ft_strcmp(token->type, "|") == 0)
+		return handle_pipe_operator(current_cmd, token);
+	else if (ft_strcmp(token->type, "&&") == 0)
+		return handle_logical_and(current_cmd, token);
+	else if (ft_strcmp(token->type, "||") == 0)
+		return handle_logical_or(current_cmd, token);
+
+	return token->next;
+}
+t_token	*handle_pipe_operator(t_command *current_cmd, t_token *token)
+{
+	current_cmd->pipe_out = 1;
+	current_cmd->next = create_new_command();
+	return token->next;
+}
+
+t_token	*handle_logical_and(t_command *current_cmd, t_token *token)
+{
+	current_cmd->logical_op = 1; // AND
+	current_cmd->next = create_new_command();
+	return token->next;
+}

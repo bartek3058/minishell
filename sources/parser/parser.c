@@ -1,6 +1,6 @@
 #include "../includes/minishell.h"
 
-static void	add_redirection_token(t_token **token, char **args, int *i, char *type)
+void	add_redirection_token(t_token **token, char **args, int *i, char *type)
 {
 	char	*arg;
 	char	*filename;
@@ -8,7 +8,6 @@ static void	add_redirection_token(t_token **token, char **args, int *i, char *ty
 
 	arg = args[*i];
 	type_len = (int)ft_strlen(type);
-
 	//check if redir and filename are combilned (no space)
 	if ((int)ft_strlen(arg) > type_len && 
 		ft_strncmp(arg, type, type_len) == 0)
@@ -20,8 +19,7 @@ static void	add_redirection_token(t_token **token, char **args, int *i, char *ty
 			add_token(token, "WORD", filename);
 	}
 	else
-	{
-		//Normal case (space after redir token)
+	{     //Normal case (space after redir token)
 		add_token(token, type, NULL);
 		if (args[*i + 1]){
 			add_token(token, "WORD", args[*i + 1]);
@@ -60,27 +58,17 @@ static int	starts_with_redirect(char *arg)
 	return(0);
 }
 
-static void	handle_operator_token(t_token **token, char **args, int *i)
+void	handle_operator_token_2(t_token **token, char **args, int *i)
 {
 	int	redirect_len;
-	
+
 	redirect_len = starts_with_redirect(args[*i]);
-	if (redirect_len > 0){
-		if (redirect_len == 2){
-			if (args[*i][0] == '>')
-				add_redirection_token(token, args, i, ">>");
-			else
-				add_redirection_token(token, args, i, "<<");
-		}
-		else{
-			if (args[*i][0] == '>')
-				add_redirection_token(token, args, i, ">");
-			else
-				add_redirection_token(token, args, i, "<");
-		}
+	if (redirect_len > 0)
+	{
+		handle_redirect_token(token, args, i, redirect_len);
 		return;
 	}
-	else if (ft_strcmp(args[*i], "|") == 0)
+	if (ft_strcmp(args[*i], "|") == 0)
 		add_token(token, "|", NULL);
 	else if (ft_strcmp(args[*i], "&&") == 0)
 		add_token(token, "&&", NULL);
@@ -88,8 +76,8 @@ static void	handle_operator_token(t_token **token, char **args, int *i)
 		add_token(token, "||", NULL);
 	else
 		handle_word_token(token, args, i);
-	return;
 }
+
 
 void tokenize_input(char **args, t_token **token)
 {
@@ -97,29 +85,11 @@ void tokenize_input(char **args, t_token **token)
 	int	old_i;
 
 	i = 0;
-	// DEBUG
-	// int j = 0;
-	// printf("DEBUG: Tokenizing input with %d args:\n", count_args(args)+1);
-	// while (args[j]){
-	// 	printf("  args[%d] = '%s'\n", j, args[j]);
-	// 	j++;
-	// }
-	// END DEBUG
 	while (args[i])
 	{
-		//DEBUG
-		// printf("DEBUG: Processing token %d: '%s'\n", i, args[i]);
-		//END DEBUG
 		old_i = i;
-		//DEBUG
-		// printf("i: %d\n", i);
-		//END DEBUG
 		if (is_redirect_or_pipe(args[i])){
-			//DEBUG
-			// return_error("tokenize_input", args[i], "redirect or pipe");
-			// printf("i (before handle operator token): %d\n", i);
-			//END DEBUG
-			handle_operator_token(token, args, &i);
+			handle_operator_token_2(token, args, &i);
 			//DEBUG
 			// printf("i (after handle operator token): %d\n", i);
 			//END DEBUG

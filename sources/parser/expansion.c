@@ -1,57 +1,54 @@
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
-static int	expand_env_var(char *str, int *i, char *result, int j, t_minishell *shell)
+static void	expand_env_var(t_expctx *ctx)
 {
 	char	var_name[256];
-	char	*var_value;
-	int		k;
-	int		l;
+	char	*val;
+	int		k = 0;
+	int		l = 0;
 
-	k = 0;
-	while(str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_')){
-		var_name[k++] = str[*i];
-		(*i)++;
-	}
+	while (ctx->str[ctx->i] && (ft_isalnum(ctx->str[ctx->i]) || ctx->str[ctx->i] == '_'))
+		var_name[k++] = ctx->str[ctx->i++];
 	var_name[k] = '\0';
-	var_value = get_env_value(shell->env_list, var_name);
-	if(var_value){
-		l = 0;
-		while(var_value[l])
-			result[j++] = var_value[l++];
-	}
-	return j;
+	val = get_env_value(ctx->shell->env_list, var_name);
+	if (!val)
+		return;
+	while (val[l])
+		ctx->result[ctx->j++] = val[l++];
 }
 
-static int	expand_exit_status(char *result,int j,t_minishell *shell)
+
+static int	expand_exit_status(char *res, int j, t_minishell *shell)
 {
 	char	*status_str;
-	int		k;
+	int		k = 0;
 
 	status_str = ft_itoa(shell->exit_status);
-	if(!status_str)
+	if (!status_str)
 		return j;
-	k=0;
 	while (status_str[k])
-		result[j++] = status_str[k++];
+		res[j++] = status_str[k++];
 	free(status_str);
 	return j;
 }
 
-static int	handle_dollar_exp(char *str, int *i,char *result,int j,t_minishell *shell)
+
+static void	handle_dollar_exp(t_expctx *ctx)
 {
-	if (str[*i] == '?'){
-		j = expand_exit_status(result, j, shell);
-		(*i)++;
+	if (ctx->str[ctx->i] == '?')
+	{
+		ctx->j = expand_exit_status(ctx->result, ctx->j, ctx->shell);
+		ctx->i++;
 	}
-	else if (ft_isalpha(str[*i]) || str[*i] == '_')
-		j = expand_env_var(str, i, result, j, shell);
-	else{
-		result[j++] = '$';
-		result[j++] = str[*i];
-		(*i)++;
+	else if (ft_isalpha(ctx->str[ctx->i]) || ctx->str[ctx->i] == '_')
+		expand_env_var(ctx);
+	else
+	{
+		ctx->result[ctx->j++] = '$';
+		ctx->result[ctx->j++] = ctx->str[ctx->i++];
 	}
-	return j;
 }
+
 
 static size_t	calc_result_length(const char *str, t_minishell *shell)
 {
@@ -84,25 +81,28 @@ static size_t	calc_result_length(const char *str, t_minishell *shell)
 
 char	*expand_variables(char *str, t_minishell *shell)
 {
-	char	*result;
-	int		i;
-	int		j;
+	t_expctx	ctx;
 
-	if(!str)
-	return NULL;
-	result = malloc(calc_result_length(str,shell) + 1);
-	if(!result)
+	if (!str)
 		return NULL;
-	i = 0;
-	j = 0;
-	while(str[i]){
-		if(str[i] == '$' && str[i+1]){
-			i++;
-			j = handle_dollar_exp(str, &i, result, j, shell);
+	ctx.str = str;
+	ctx.shell = shell;
+	ctx.i = 0;
+	ctx.j = 0;
+	ctx.result = malloc(calc_result_length(str, shell) + 1);
+	if (!ctx.result)
+		return NULL;
+	while (ctx.str[ctx.i])
+	{
+		if (ctx.str[ctx.i] == '$' && ctx.str[ctx.i + 1])
+		{
+			ctx.i++;
+			handle_dollar_exp(&ctx);
 		}
 		else
-			result[j++] = str[i++];
+			ctx.result[ctx.j++] = ctx.str[ctx.i++];
 	}
-	result[j] = '\0';
-	return result;
+	ctx.result[ctx.j] = '\0';
+	return ctx.result;
 }
+

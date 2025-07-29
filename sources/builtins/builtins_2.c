@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins_2.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/28 15:22:55 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/28 15:42:36 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	ft_env(t_env *env)
@@ -24,7 +36,7 @@ static int	remove_first_node(t_env **env_list, char *key)
 	t_env	*temp;
 
 	if (!env_list || !*env_list)
-		return 0;
+		return (0);
 	if (ft_strcmp((*env_list)->key, key) == 0)
 	{
 		temp = *env_list;
@@ -35,42 +47,20 @@ static int	remove_first_node(t_env **env_list, char *key)
 	return (0);
 }
 
-int ft_unset(t_env **env_list, char **args)
+int	ft_unset(t_env **env_list, char **args)
 {
-    t_env *current;
-    t_env *prev;
-    t_env *to_free;
-    int i;
-    int ret;
+	int	i;
+	int	ret;
 
-    i = 1;
-    ret = 0;
-    while (args[i])
-    {
-        ret = remove_first_node(env_list, args[i]);
-        if (!ret)
-        {
-            current = *env_list;
-            prev = NULL;
-            while (current)
-            {
-                if (ft_strcmp(current->key, args[i]) == 0)
-                {
-                    to_free = current;
-                    if (prev)
-                        prev->next = current->next;
-                    else
-                        *env_list = current->next;
-                    free_env_node(to_free);
-                    break;
-                }
-                prev = current;
-                current = current->next;
-            }
-        }
-        i++;
-    }
-    return (0);
+	i = 1;
+	while (args[i])
+	{
+		ret = remove_first_node(env_list, args[i]);
+		if (!ret)
+			remove_env_node(env_list, args[i]);
+		i++;
+	}
+	return (0);
 }
 
 char *strip_quotes(const char *str)
@@ -102,35 +92,24 @@ char *strip_quotes(const char *str)
 	return res;
 }
 
-int ft_export(t_minishell *shell, char **args)
+int	ft_export(t_minishell *shell, char **args)
 {
-	int i;
-	char *eq;
-	char *key;
-	char *value;
+	int	i;
 
 	if (!args[1])
 		return (ft_env(shell->env_list));
 	i = 1;
-	while (args[i]){
-		eq = ft_strchr(args[i], '=');
-		if (eq){
-			key = ft_substr(args[i], 0, eq - args[i]);
-			value = ft_strdup(eq + 1);
-			if (is_valid_varname(key))
-				add_env(&(shell->env_list), key, value);
-			else
-				return (return_error("export", args[i], "not a valid identifier"));
-			free(key);
-			free(value);
+	while (args[i])
+	{
+		if (ft_strchr(args[i], '='))
+		{
+			if (export_with_equal(shell, args[i]))
+				return (1);
 		}
-		else{
-			if (is_valid_varname(args[i])){
-				if (!update_existing_env(shell->env_list, args[i], ""))
-					add_env(&(shell->env_list), args[i], "");
-			}
-			else
-				return (return_error("export", args[i], "not a valid identifier"));
+		else
+		{
+			if (export_without_equal(shell, args[i]))
+				return (1);
 		}
 		i++;
 	}

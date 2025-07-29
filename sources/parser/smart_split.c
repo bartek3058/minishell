@@ -1,12 +1,5 @@
 #include "../includes/minishell.h"
 
-static int	skip_spaces(char *str,int i)
-{
-	while (str[i] == ' ')
-		i++;
-	return(i);
-}
-
 static int	skip_token(char *str,int i)
 {
 	char	quote_char;
