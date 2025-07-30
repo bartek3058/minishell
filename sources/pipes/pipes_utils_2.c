@@ -6,7 +6,7 @@
 /*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 18:57:42 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 14:20:24 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:08:48 by brogalsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	setup_pipe_redirections(int **pipes, int cmd_index, int pipe_count)
 	close_all_pipes(pipes, pipe_count);
 }
 
-void	execute_child_command(t_command *cmd, t_minishell *shell, t_token **token)
+void	execute_child_command(t_command *cmd, t_minishell *shell, t_token **token, char **args)
 {
 	char	*path;
 	char	**envp;
@@ -32,7 +32,7 @@ void	execute_child_command(t_command *cmd, t_minishell *shell, t_token **token)
 	envp = conv_env_to_array(shell->env_list);
 	if (is_builtin(cmd->args[0]))
 	{
-		ft_builtins(shell, cmd->args, cmd, token);
+		ft_builtins(shell, cmd->args, cmd, token, args);
 		exit(shell->exit_status);
 	}
 	path = check_path(cmd->args[0]);
@@ -48,7 +48,7 @@ void	execute_child_command(t_command *cmd, t_minishell *shell, t_token **token)
 // Process managememnt functions
 
 pid_t	*fork_all_processes(t_command *start_cmd, int **pipes,
-		int pipe_count, t_minishell *shell, t_token **token)
+		int pipe_count, t_minishell *shell, t_token **token, char **args)
 {
 	pid_t		*pids;
 	t_command	*current;
@@ -65,7 +65,7 @@ pid_t	*fork_all_processes(t_command *start_cmd, int **pipes,
 		if (pids[i] == 0)
 		{
 			setup_pipe_redirections(pipes, i, pipe_count);
-			execute_child_command(current, shell, token);
+			execute_child_command(current, shell, token, args);
 		}
 		current = current->next;
 		i++;

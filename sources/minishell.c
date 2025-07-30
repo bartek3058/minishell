@@ -6,7 +6,7 @@
 /*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:39:34 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 13:47:52 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/30 16:06:29 by brogalsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	minishell_loop_helper(t_minishell *shell, char **args, t_token **token)
 		cleanup_and_return(args, shell->line, *token);
 		return ;
 	}
-	shell->exit_status = execute_command_chain(shell, cmd_list, token);
+	shell->exit_status = execute_command_chain(shell, cmd_list, token, args);
 	free_command_list(cmd_list);
 	cleanup_and_return(args, shell->line, *token);
 	*token = NULL;
@@ -44,6 +44,7 @@ void	minishell_loop(t_minishell *shell, char **args, t_token **token)
 		if (shell->line == NULL)
 		{
 			ft_putstr_fd("\n", 1);
+			free_env(shell->env_list);
 			exit(shell->exit_status);
 		}
 		minishell_loop_helper(shell, args, token);

@@ -6,14 +6,14 @@
 /*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 18:55:11 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 14:08:54 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/30 15:45:10 by brogalsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 void	ft_pipe_child(int pipefd[2], int is_first_cmd,
-		t_command *cmd, char **envp, t_token **token)
+		t_command *cmd, char **envp, t_token **token, char **args)
 {
 	char	*path;
 
@@ -22,7 +22,7 @@ void	ft_pipe_child(int pipefd[2], int is_first_cmd,
 		exit(1);
 	if (is_builtin(cmd->args[0]))
 	{
-		ft_builtins(NULL, cmd->args, cmd, token);
+		ft_builtins(NULL, cmd->args, cmd, token, args);
 		exit(0);
 	}
 	path = check_path(cmd->args[0]);
@@ -36,7 +36,7 @@ void	ft_pipe_child(int pipefd[2], int is_first_cmd,
 	exit(EXIT_FAILURE);
 }
 
-void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2, t_token **token)
+void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2, t_token **token, char **args)
 {
 	int		pipefd[2];
 	pid_t	pid1;
@@ -52,10 +52,10 @@ void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2, t_tok
 	}
 	pid1 = fork();
 	if (pid1 == 0)
-		ft_pipe_child(pipefd, 1, cmd1, envp, token);
+		ft_pipe_child(pipefd, 1, cmd1, envp, token, args);
 	pid2 = fork();
 	if (pid2 == 0)
-		ft_pipe_child(pipefd, 0, cmd2, envp, token);
+		ft_pipe_child(pipefd, 0, cmd2, envp, token, args);
 	ft_close_pipes(pipefd);
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, &status, 0);
@@ -66,7 +66,7 @@ void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2, t_tok
 	free_args(envp);
 }
 
-void	ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd, t_token **token)
+void	ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd, t_token **token, char **args)
 {
 	int		pipe_count;
 	int		**pipes;
@@ -76,7 +76,7 @@ void	ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd, t_token
 	pipes = create_pipes(pipe_count);
 	if (!pipes)
 		return ;
-	pids = fork_all_processes(start_cmd, pipes, pipe_count, shell, token);
+	pids = fork_all_processes(start_cmd, pipes, pipe_count, shell, token, args);
 	if (!pids)
 	{
 		free_pipes(pipes, pipe_count);

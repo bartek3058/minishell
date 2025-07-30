@@ -6,7 +6,7 @@
 /*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:06:40 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 14:22:45 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/30 20:13:53 by brogalsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	parse_exit_code(const char *str)
 	return (result & 255);
 }
 
-void	ft_exit(t_minishell *shell, char **args, t_command *cmd, t_token **token)
+void	ft_exit(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv)
 {
 	int		arg_count;
 	int		exit_code;
@@ -79,6 +79,7 @@ void	ft_exit(t_minishell *shell, char **args, t_command *cmd, t_token **token)
 	free_env(shell->env_list);
 	shell->env_list = NULL;
 	free_command_list(cmd);
+	free_args(argv);
 	free_tokens(*token);
 	exit(exit_code);
 }
@@ -93,9 +94,9 @@ void	ft_pwd(void)
 		perror("getcwd() error");
 }
 
-void	ft_builtins(t_minishell *shell, char **args, t_command *cmd, t_token **token)
+void	ft_builtins(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv)
 {
 	if (!args || !args[0])
 		return ;
-	ft_builtins_part1(shell, args, cmd, token);
+	ft_builtins_part1(shell, args, cmd, token, argv);
 }

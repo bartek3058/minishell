@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_t.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 10:27:16 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 10:31:10 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/30 19:07:23 by brogalsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int	execute_cmd(char *path, char **args, t_env *env_list)
 	return (0);
 }
 
-void	execute_child_process(t_minishell *shell, t_command *cmd)
+void	execute_child_process(t_minishell *shell, t_command *cmd, t_token **token, char **args)
 {
 	char	*path;
 	char	**envp;
@@ -96,12 +96,22 @@ void	execute_child_process(t_minishell *shell, t_command *cmd)
 	if (!path)
 	{
 		return_error("execute command", cmd->args[0], "command not found");
+		free_command_list(cmd);
+		free_env(shell->env_list);
+		free_tokens(*token);
+		free_args(args);
 		exit(127);
 	}
 	envp = conv_env_to_array(shell->env_list);
 	if (execve(path, cmd->args, envp) == -1)
 	{
 		perror("execve");
+		free_command_list(cmd);
+		free_env(shell->env_list);
+		free_tokens(*token);
+		free_args(args);
+		free_args(envp);
+		free(path);
 		exit(EXIT_FAILURE);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 10:12:34 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 13:58:09 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/30 17:03:13 by brogalsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char	*search_in_paths(char **paths, char *cmd)
 	return (NULL);
 }
 
-static int	fork_and_execute(t_minishell *shell, t_command *cmd)
+static int	fork_and_execute(t_minishell *shell, t_command *cmd, t_token **token, char **args)
 {
 	pid_t	pid;
 	int		status;
@@ -49,7 +49,7 @@ static int	fork_and_execute(t_minishell *shell, t_command *cmd)
 	pid = fork();
 	if (pid == 0)
 	{
-		execute_child_process(shell, cmd);
+		execute_child_process(shell, cmd, token, args);
 		exit (1);
 	}
 	else if (pid > 0)
@@ -66,16 +66,16 @@ static int	fork_and_execute(t_minishell *shell, t_command *cmd)
 	}
 }
 
-int	execute_command(t_minishell *shell, t_command *cmd, t_token **token)
+int	execute_command(t_minishell *shell, t_command *cmd, t_token **token, char **args)
 {
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
 	if (is_builtin(cmd->args[0]))
 	{
-		ft_builtins(shell, cmd->args, cmd, token);
+		ft_builtins(shell, cmd->args, cmd, token, args);
 		return (shell->exit_status);
 	}
-	return (fork_and_execute(shell, cmd));
+	return (fork_and_execute(shell, cmd, token, args));
 }
 
 int	return_error(char *origin, char *identifier, char *message)
