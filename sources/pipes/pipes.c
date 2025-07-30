@@ -1,21 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipes.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 18:55:11 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/30 14:08:54 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-void	ft_pipe_child(int pipefd[2], int is_first_cmd, t_command *cmd, char **envp)
+void	ft_pipe_child(int pipefd[2], int is_first_cmd,
+		t_command *cmd, char **envp, t_token **token)
 {
 	char	*path;
-	
-	// first: pipe redirections
+
 	ft_pipe_redirection(pipefd, is_first_cmd);
-	// then: file redirections
 	if (setup_redirections(cmd) < 0)
 		exit(1);
-	// builtins in pipe:
 	if (is_builtin(cmd->args[0]))
 	{
-		ft_builtins(NULL, cmd->args);
+		ft_builtins(NULL, cmd->args, cmd, token);
 		exit(0);
 	}
-	// last: external commands
 	path = check_path(cmd->args[0]);
 	if (!path)
 	{
@@ -27,7 +36,7 @@ void	ft_pipe_child(int pipefd[2], int is_first_cmd, t_command *cmd, char **envp)
 	exit(EXIT_FAILURE);
 }
 
-void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2)
+void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2, t_token **token)
 {
 	int		pipefd[2];
 	pid_t	pid1;
@@ -36,16 +45,17 @@ void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2)
 	char	**envp;
 
 	envp = conv_env_to_array(shell->env_list);
-	if (pipe(pipefd) < 0){
+	if (pipe(pipefd) < 0)
+	{
 		perror("pipe");
-		return;
+		return ;
 	}
 	pid1 = fork();
 	if (pid1 == 0)
-		ft_pipe_child(pipefd, 1, cmd1, envp);
+		ft_pipe_child(pipefd, 1, cmd1, envp, token);
 	pid2 = fork();
 	if (pid2 == 0)
-		ft_pipe_child(pipefd, 0, cmd2, envp);
+		ft_pipe_child(pipefd, 0, cmd2, envp, token);
 	ft_close_pipes(pipefd);
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, &status, 0);
@@ -56,22 +66,21 @@ void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2)
 	free_args(envp);
 }
 
-
-void	ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd)
+void	ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd, t_token **token)
 {
 	int		pipe_count;
 	int		**pipes;
 	pid_t	*pids;
 
 	pipe_count = count_pipe_commands(start_cmd);
-	// Create pipes
 	pipes = create_pipes(pipe_count);
 	if (!pipes)
-		return;
-	pids = fork_all_processes(start_cmd, pipes, pipe_count, shell);
-	if (!pids){
+		return ;
+	pids = fork_all_processes(start_cmd, pipes, pipe_count, shell, token);
+	if (!pids)
+	{
 		free_pipes(pipes, pipe_count);
-		return;
+		return ;
 	}
 	close_all_pipes(pipes, pipe_count);
 	wait_for_children(pids, pipe_count, shell);

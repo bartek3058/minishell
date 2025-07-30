@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 19:04:20 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/29 19:04:33 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	ft_output_redirection(t_command *cmd)
@@ -16,7 +28,7 @@ int	ft_output_redirection(t_command *cmd)
 void	ft_heredoc_redirection(t_command *cmd)
 {
 	if (!cmd->heredoc)
-		return;
+		return ;
 	write_heredoc_to_tmp(cmd->heredoc);
 	redirect_heredoc_input();
 }

@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 17:28:48 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/29 17:33:23 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	free_args(char **args)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	if (!args)
@@ -14,6 +26,7 @@ void	free_args(char **args)
 	}
 	free(args);
 }
+
 void	free_env(t_env *env)
 {
 	t_env	*tmp;
@@ -38,9 +51,10 @@ void	free_env_node(t_env *node)
 		free(node);
 	}
 }
+
 void	free_tokens(t_token *token)
 {
-	t_token *tmp;
+	t_token	*tmp;
 
 	while (token)
 	{
@@ -54,12 +68,12 @@ void	free_tokens(t_token *token)
 	}
 }
 
-void cleanup_and_return(char **args, char *line, t_token *token)
+void	cleanup_and_return(char **args, char *line, t_token *token)
 {
-    if (args)
-        free_args(args);
-    if (line)
-        free(line);
-    if (token)
-        free_tokens(token);
+	if (args)
+		free_args(args);
+	if (line)
+		free(line);
+	if (token)
+		free_tokens(token);
 }

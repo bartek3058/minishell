@@ -6,7 +6,7 @@
 /*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 15:22:55 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/28 15:42:36 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/30 11:13:15 by brogalsk         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_env(t_env *env)
 	current = env;
 	while (current)
 	{
-		if (current->value) // Only print variables with values
+		if (current->value)
 		{
 			ft_putstr_fd(current->key, STDOUT_FILENO);
 			ft_putstr_fd("=", STDOUT_FILENO);
@@ -63,33 +63,35 @@ int	ft_unset(t_env **env_list, char **args)
 	return (0);
 }
 
-char *strip_quotes(const char *str)
+char	*strip_quotes(const char *str)
 {
 	size_t	i;
 	size_t	j;
 	char	*res;
 	char	quote;
-	
+
 	if (!str)
-		return NULL;
+		return (NULL);
 	res = malloc(ft_strlen(str) + 1);
 	if (!res)
-		return NULL;
+		return (NULL);
 	i = 0;
 	j = 0;
 	quote = 0;
-	while (str[i]){
+	while (str[i])
+	{
 		if (!quote && (str[i] == '\'' || str[i] == '"'))
 			quote = str[i++];
-		else if (quote && str[i] == quote){
+		else if (quote && str[i] == quote)
+		{
 			quote = 0;
 			i++;
-			}
+		}
 		else
 			res[j++] = str[i++];
 	}
 	res[j] = '\0';
-	return res;
+	return (res);
 }
 
 int	ft_export(t_minishell *shell, char **args)

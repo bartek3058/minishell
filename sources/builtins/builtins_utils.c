@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   builtins_utils.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 17:15:27 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/30 13:45:03 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 void	remove_env_node(t_env **env_list, char *key)
@@ -18,12 +30,13 @@ void	remove_env_node(t_env **env_list, char *key)
 			else
 				*env_list = current->next;
 			free_env_node(to_free);
-			break;
+			break ;
 		}
 		prev = current;
 		current = current->next;
 	}
 }
+
 int	export_with_equal(t_minishell *shell, char *arg)
 {
 	char	*key;
@@ -57,14 +70,15 @@ int	export_without_equal(t_minishell *shell, char *arg)
 		return (return_error("export", arg, "not a valid identifier"));
 	return (0);
 }
-void	ft_builtins_part1(t_minishell *shell, char **args)
+
+void	ft_builtins_part1(t_minishell *shell, char **args, t_command *cmd, t_token **token)
 {
 	int	exit_code;
 
 	if (ft_strcmp(args[0], "pwd") == 0)
 		ft_pwd();
 	else if (ft_strcmp(args[0], "exit") == 0)
-		ft_exit(shell, args);
+		ft_exit(shell, args, cmd, token);
 	else if (ft_strcmp(args[0], "echo") == 0)
 	{
 		exit_code = ft_echo(args);

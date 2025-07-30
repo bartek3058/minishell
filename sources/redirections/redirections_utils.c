@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections_utils.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 19:04:45 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/29 19:05:00 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	open_and_truncate_outputs(t_command *cmd, int *last_fd)
@@ -36,6 +48,7 @@ int	dup_last_output(int fd)
 	}
 	return (0);
 }
+
 void	write_heredoc_to_tmp(char *delimiter)
 {
 	int		fd;
@@ -53,7 +66,7 @@ void	write_heredoc_to_tmp(char *delimiter)
 		if (!line || strcmp(line, delimiter) == 0)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		write(fd, line, strlen(line));
 		write(fd, "\n", 1);

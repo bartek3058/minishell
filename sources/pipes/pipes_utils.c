@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipes_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 19:01:43 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/29 19:03:32 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-void close_all_pipes(int **pipes, int pipe_count)
+void	close_all_pipes(int **pipes, int pipe_count)
 {
 	int	i;
-	
+
 	i = 0;
 	while (i < pipe_count - 1)
 	{
@@ -12,14 +24,14 @@ void close_all_pipes(int **pipes, int pipe_count)
 		i++;
 	}
 }
+
 void	ft_close_pipes(int *pipefd)
 {
-    close(pipefd[0]);
-    close(pipefd[1]);
+	close(pipefd[0]);
+	close(pipefd[1]);
 }
 
-
-int count_pipe_commands(t_command *start_cmd)
+int	count_pipe_commands(t_command *start_cmd)
 {
 	t_command	*current;
 	int			count;
@@ -31,7 +43,7 @@ int count_pipe_commands(t_command *start_cmd)
 		count++;
 		current = current->next;
 	}
-	count++; // Add final command
+	count++;
 	return (count);
 }
 
@@ -42,25 +54,28 @@ int	**create_pipes(int pipe_count)
 
 	pipes = malloc(sizeof(int *) * pipe_count - 1);
 	if (!pipes)
-		return(0);
+		return (0);
 	i = 0;
-	while (i < pipe_count - 1){
+	while (i < pipe_count - 1)
+	{
 		pipes[i] = malloc(sizeof(int) * 2);
-		if (!pipes[i] || pipe(pipes[i]) < 0){
+		if (!pipes[i] || pipe(pipes[i]) < 0)
+		{
 			perror("pipe");
-			return(0);
+			return (0);
 		}
 		i++;
 	}
-	return(pipes);
+	return (pipes);
 }
 
-void		free_pipes(int **pipes, int pipe_count)
+void	free_pipes(int **pipes, int pipe_count)
 {
 	int	i;
 
 	i = 0;
-	while (i < pipe_count - 1){
+	while (i < pipe_count - 1)
+	{
 		free(pipes[i]);
 		i++;
 	}

@@ -1,37 +1,51 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expansion.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 17:49:27 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/29 18:27:42 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static void	expand_env_var(t_expctx *ctx)
 {
 	char	var_name[256];
 	char	*val;
-	int		k = 0;
-	int		l = 0;
+	int		k;
+	int		l;
 
-	while (ctx->str[ctx->i] && (ft_isalnum(ctx->str[ctx->i]) || ctx->str[ctx->i] == '_'))
+	k = 0;
+	l = 0;
+	while (ctx->str[ctx->i] && (ft_isalnum(ctx->str[ctx->i])
+			|| ctx->str[ctx->i] == '_'))
 		var_name[k++] = ctx->str[ctx->i++];
 	var_name[k] = '\0';
 	val = get_env_value(ctx->shell->env_list, var_name);
 	if (!val)
-		return;
+		return ;
 	while (val[l])
 		ctx->result[ctx->j++] = val[l++];
 }
 
-
 static int	expand_exit_status(char *res, int j, t_minishell *shell)
 {
 	char	*status_str;
-	int		k = 0;
+	int		k;
 
+	k = 0;
 	status_str = ft_itoa(shell->exit_status);
 	if (!status_str)
-		return j;
+		return (j);
 	while (status_str[k])
 		res[j++] = status_str[k++];
 	free(status_str);
-	return j;
+	return (j);
 }
-
 
 static void	handle_dollar_exp(t_expctx *ctx)
 {
@@ -49,34 +63,36 @@ static void	handle_dollar_exp(t_expctx *ctx)
 	}
 }
 
-
 static size_t	calc_result_length(const char *str, t_minishell *shell)
 {
 	size_t	len;
 	size_t	i;
 	size_t	var_start;
-	char *val;
+	char	*val;
 	char	var_name[256];
 
 	len = 0;
 	i = 0;
-	while (str[i]){
-		if (str[i] == '$' && str[i+1]){
+	while (str[i])
+	{
+		if (str[i] == '$' && str[i + 1])
+		{
 			i++;
 			var_start = i;
 			while (str[i] && (ft_isalnum(str[i]) || str[i] == '_'))
 				i++;
 			ft_strlcpy(var_name, str + var_start, i - var_start + 1);
 			val = get_env_value(shell->env_list, var_name);
-			if(val)
-				len+= ft_strlen(val);
+			if (val)
+				len += ft_strlen(val);
 		}
-		else {
+		else
+		{
 			len++;
 			i++;
 		}
 	}
-	return len;
+	return (len);
 }
 
 char	*expand_variables(char *str, t_minishell *shell)
@@ -84,14 +100,14 @@ char	*expand_variables(char *str, t_minishell *shell)
 	t_expctx	ctx;
 
 	if (!str)
-		return NULL;
+		return (NULL);
 	ctx.str = str;
 	ctx.shell = shell;
 	ctx.i = 0;
 	ctx.j = 0;
 	ctx.result = malloc(calc_result_length(str, shell) + 1);
 	if (!ctx.result)
-		return NULL;
+		return (NULL);
 	while (ctx.str[ctx.i])
 	{
 		if (ctx.str[ctx.i] == '$' && ctx.str[ctx.i + 1])
@@ -103,6 +119,5 @@ char	*expand_variables(char *str, t_minishell *shell)
 			ctx.result[ctx.j++] = ctx.str[ctx.i++];
 	}
 	ctx.result[ctx.j] = '\0';
-	return ctx.result;
+	return (ctx.result);
 }
-

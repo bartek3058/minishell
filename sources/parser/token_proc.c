@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   token_proc.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 18:45:19 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/30 13:13:02 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
 t_command	*create_new_command(void)
@@ -6,12 +18,12 @@ t_command	*create_new_command(void)
 
 	cmd = malloc(sizeof(t_command));
 	if (!cmd)
-		return NULL;
-	cmd->args = malloc(sizeof(char *) * 256); // Allocate space for up to 255 args
+		return (NULL);
+	cmd->args = malloc(sizeof(char *) * 256);
 	if (!cmd->args)
 	{
 		free(cmd);
-		return NULL;
+		return (NULL);
 	}
 	cmd->args[0] = NULL;
 	cmd->input_files = malloc(sizeof(char *) * 16);
@@ -25,7 +37,7 @@ t_command	*create_new_command(void)
 	cmd->pipe_out = 0;
 	cmd->next = NULL;
 	cmd->pid = 0;
-	return cmd;
+	return (cmd);
 }
 // static void add_args_to_command(t_command *cmd, t_token **token, t_minishell *shell)
 // {
@@ -132,7 +144,7 @@ void	handle_redirection(t_command *cmd, t_token **token)
 	if (!current || !current->type)
 	{
 		*token = NULL;
-		return;
+		return ;
 	}
 	if (ft_strcmp(current->type, "<") == 0)
 		handle_input_redirection(cmd, token);
@@ -147,19 +159,16 @@ void	handle_redirection(t_command *cmd, t_token **token)
 }
 
 // Token Processing Helper Functions
-static t_token	*handle_command_token(t_command *cmd, t_token *token, t_minishell *shell)
+static t_token	*handle_command_token(t_command *cmd, t_token *token,
+		t_minishell *shell)
 {
-	//add_args_to_command(cmd, &token, shell);
-	//return token;
-
-	// Another approach: Only add the current token as an argument
-    int i;
+	int	i;
 
 	i = 0;
 	while (cmd->args && cmd->args[i])
 		i++;
 	if (i >= 255)
-		return token->next;
+		return (token->next);
 	if (ft_strcmp(token->type, "WORD") == 0 && token->value)
 		cmd->args[i] = strip_quotes(token->value);
 	else if (ft_strcmp(token->type, "VAR_WORD") == 0 && token->value)
@@ -167,7 +176,7 @@ static t_token	*handle_command_token(t_command *cmd, t_token *token, t_minishell
 	else if (is_builtin(token->type))
 		cmd->args[i] = strip_quotes(token->type);
 	cmd->args[i + 1] = NULL;
-	return token->next;
+	return (token->next);
 }
 
 // static t_token *process_single_token(t_command *current_cmd, t_token *token, t_minishell *shell)
@@ -182,18 +191,22 @@ static t_token	*handle_command_token(t_command *cmd, t_token *token, t_minishell
 //         return token->next;
 // }
 
+
 t_command	*parse_command_chain(t_token *tokens, t_minishell *shell)
 {
-	t_command	*cmd_list = NULL;
-	t_command	*current_cmd = NULL;
-	t_command	*last_cmd = NULL;
-	t_token		*token = tokens;
+	t_command	*cmd_list;
+	t_command	*current_cmd;
+	t_command	*last_cmd;
+	t_token		*token;
 
+	cmd_list = NULL;
+	current_cmd = NULL;
+	last_cmd = NULL;
+	token = tokens;
 	while (token)
 	{
 		if (!current_cmd)
 			init_command_node(&cmd_list, &current_cmd, &last_cmd);
-
 		if (is_redirection_token(token))
 			token = handle_redirection_token(current_cmd, token);
 		else if (ft_strcmp(token->type, "|") == 0)
@@ -205,8 +218,5 @@ t_command	*parse_command_chain(t_token *tokens, t_minishell *shell)
 		else
 			token = token->next;
 	}
-	return cmd_list;
+	return (cmd_list);
 }
-
-
-

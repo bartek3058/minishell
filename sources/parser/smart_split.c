@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   smart_split.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 18:43:28 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/29 18:45:06 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/minishell.h"
 
-static int	skip_token(char *str,int i)
+static int	skip_token(char *str, int i)
 {
 	char	quote_char;
 	int		in_quotes;
@@ -33,16 +45,17 @@ static int	count_tokens(char *str)
 	i = 0;
 	while (str[i])
 	{
-		i = skip_spaces(str,i);
+		i = skip_spaces(str, i);
 		if (str[i] == '\0')
-			break;
+			break ;
 		count++;
-		i = skip_token(str,i);
+		i = skip_token(str, i);
 		if (str[i] == '\0')
-			break;
+			break ;
 	}
-	return(count);
+	return (count);
 }
+
 static char	*create_token_from_range(char *str, int start, int len)
 {
 	char	*token;
@@ -50,7 +63,7 @@ static char	*create_token_from_range(char *str, int start, int len)
 
 	token = malloc(len + 1);
 	if (!token)
-		return NULL;
+		return (NULL);
 	i = 0;
 	while (i < len)
 	{
@@ -60,6 +73,7 @@ static char	*create_token_from_range(char *str, int start, int len)
 	token[len] = '\0';
 	return (token);
 }
+
 static char	*extract_single_token(char *str, int *pos)
 {
 	char	*token;
@@ -69,7 +83,7 @@ static char	*extract_single_token(char *str, int *pos)
 
 	*pos = skip_spaces(str, *pos);
 	if (str[*pos] == '\0')
-		return NULL;
+		return (NULL);
 	start = *pos;
 	*pos = skip_token(str, *pos);
 	end = *pos;
@@ -86,18 +100,20 @@ char	**smart_split(char *str)
 	int		pos;
 
 	if (!str)
-		return NULL;
+		return (NULL);
 	token_count = count_tokens(str);
 	tokens = malloc(sizeof(char *) * (token_count + 1));
-	if(!tokens)
-		return NULL;
+	if (!tokens)
+		return (NULL);
 	i = 0;
 	pos = 0;
-	while (i < token_count){
+	while (i < token_count)
+	{
 		tokens[i] = extract_single_token(str, &pos);
-		if (!tokens[i]){
+		if (!tokens[i])
+		{
 			free_args(tokens);
-			return NULL;
+			return (NULL);
 		}
 		i++;
 	}

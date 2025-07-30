@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirections_utils_2.c                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/29 19:05:12 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/29 19:05:24 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 int	open_all_input_files(t_command *cmd, int *last_fd)
@@ -36,6 +48,7 @@ int	dup_last_input(int fd)
 	}
 	return (0);
 }
+
 int	open_all_append_files(t_command *cmd, int *last_fd)
 {
 	int	fd;

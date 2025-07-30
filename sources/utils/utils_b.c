@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_b.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/30 10:15:58 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/30 10:17:42 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
-int is_redirect_or_pipe(char *arg)
+int	is_redirect_or_pipe(char *arg)
 {
 	if (!arg)
 		return (0);
-	if (!ft_strcmp(arg, "|") || !ft_strcmp(arg, "&&") ||
-		!ft_strcmp(arg, "||"))
+	if (!ft_strcmp(arg, "|") || !ft_strcmp(arg, "&&")
+		|| !ft_strcmp(arg, "||"))
 		return (1);
 	if (ft_strncmp(arg, ">>", 2) == 0 || ft_strncmp(arg, "<<", 2) == 0)
 		return (1);
@@ -13,6 +25,7 @@ int is_redirect_or_pipe(char *arg)
 		return (1);
 	return (0);
 }
+
 int	handle_env_entry(t_env *current, char **arr, int i)
 {
 	char	*tmp;
@@ -50,9 +63,12 @@ int	fill_env_array(t_env *env, char **arr)
 	arr[i] = NULL;
 	return (1);
 }
+
 int	count_tokens_2(t_token *token)
 {
-	int count = 0;
+	int	count;
+
+	count = 0;
 	while (token)
 	{
 		count++;
@@ -63,8 +79,9 @@ int	count_tokens_2(t_token *token)
 
 void	fill_args_array(char **args, t_token *token)
 {
-	int i = 0;
+	int	i;
 
+	i = 0;
 	args[i++] = ft_strdup(token->type);
 	if (token->value)
 		args[i++] = ft_strdup(token->value);

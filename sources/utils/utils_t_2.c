@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils_t_2.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/30 10:25:26 by brogalsk          #+#    #+#             */
+/*   Updated: 2025/07/30 10:26:45 by brogalsk         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../../includes/minishell.h"
 
 static	int	ft_envsize(t_env *env)
@@ -14,6 +26,7 @@ static	int	ft_envsize(t_env *env)
 	}
 	return (size);
 }
+
 char	**conv_env_to_array(t_env *env)
 {
 	char	**arr;
@@ -40,15 +53,17 @@ char	**tokens_to_args(t_token *token)
 	fill_args_array(args, token);
 	return (args);
 }
-char *get_env_value(t_env *env_list, char *key)
+
+char	*get_env_value(t_env *env_list, char *key)
 {
 	t_env	*current;
 
 	current = env_list;
-	while(current){
-		if(ft_strcmp(current->key, key) == 0)
-			return current->value;
+	while (current)
+	{
+		if (ft_strcmp(current->key, key) == 0)
+			return (current->value);
 		current = current->next;
 	}
-	return NULL;
+	return (NULL);
 }
