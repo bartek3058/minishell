@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tomek <tomek@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:39:34 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 16:06:29 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/31 23:04:31 by tomek            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,11 +81,11 @@ void	free_command_list(t_command *cmd_list)
 		if (current->args)
 			free_args(current->args);
 		if (current->input_files)
-			free(current->input_files);
+			free_input_files(current);
 		if (current->output_files)
-			free(current->output_files);
+			free_output_files(current);
 		if (current->append_files)
-			free(current->append_files);
+			free_append_files(current);
 		if (current->heredoc)
 			free(current->heredoc);
 		free(current);

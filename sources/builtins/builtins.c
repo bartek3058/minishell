@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tomek <tomek@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:06:40 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 20:13:53 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/31 23:08:26 by tomek            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 int	ft_echo(char **args)
 {
-	char	*stripped;
 	int		i;
 	int		n_flag;
 
@@ -27,9 +26,7 @@ int	ft_echo(char **args)
 	}
 	while (args[i])
 	{
-		stripped = strip_quotes(args[i]);
-		ft_putstr_fd(stripped, 1);
-		free(stripped);
+		ft_putstr_fd(args[i], 1);
 		if (args[i + 1])
 			write(1, " ", 1);
 		i++;

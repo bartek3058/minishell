@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brogalsk <brogalsk@student.42.fr>          +#+  +:+       +#+        */
+/*   By: tomek <tomek@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/28 14:31:08 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/30 17:03:53 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/07/31 23:05:43 by tomek            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -215,6 +215,9 @@ void		cleanup_and_return(char **args, char *line, t_token *token);
 void	free_command(t_command *cmd);
 void	free_str_array(char **arr);
 void	free_command_list_2(t_command *cmd_list);
+void	free_input_files(t_command *cmd_list);
+void	free_output_files(t_command *cmd_list);
+void	free_append_files(t_command *cmd_list);
 
 
 

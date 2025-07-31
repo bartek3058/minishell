@@ -29,6 +29,7 @@ SRCS	=	./sources/minishell.c\
 					./sources/pipes/pipes_utils_2.c\
 					./sources/free/free.c\
 					./sources/free/free_2.c\
+					./sources/free/free_3.c\
 					./sources/init.c\
 					./sources/parser/parser.c\
 					./sources/parser/parser1.c\
