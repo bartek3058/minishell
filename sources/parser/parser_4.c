@@ -38,3 +38,18 @@ void	handle_operator_and_reset(t_command **current_cmd, t_command **last_cmd,
 	*last_cmd = *current_cmd;
 	*current_cmd = NULL;
 }
+
+int	expand_exit_status(char *res, int j, t_minishell *shell)
+{
+	char	*status_str;
+	int		k;
+
+	k = 0;
+	status_str = ft_itoa(shell->exit_status);
+	if (!status_str)
+		return (j);
+	while (status_str[k])
+		res[j++] = status_str[k++];
+	free(status_str);
+	return (j);
+}

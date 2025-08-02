@@ -87,3 +87,26 @@ int	validate_numeric_arg(const char *str)
 	free(stripped);
 	return (valid);
 }
+
+void	init_env_list(t_minishell *shell, char **envp)
+{
+	int		i;
+	char	*key;
+	char	*value;
+	char	*eq_pos;
+
+	i = 0;
+	while (envp[i])
+	{
+		eq_pos = ft_strchr(envp[i], '=');
+		if (eq_pos)
+		{
+			key = ft_substr(envp[i], 0, eq_pos - envp[i]);
+			value = ft_strdup(eq_pos + 1);
+			add_env(&(shell->env_list), key, value);
+			free(key);
+			free(value);
+		}
+		i++;
+	}
+}

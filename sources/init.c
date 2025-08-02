@@ -72,30 +72,12 @@ void	setup_signals(void)
 
 void	init_minishell(t_minishell *shell, char **envp, t_token **token)
 {
-	int		i;
-	char	*key;
-	char	*value;
-	char	*eq_pos;
-
 	shell->env_list = NULL;
 	shell->commands = NULL;
 	shell->exit_status = 0;
 	shell->running = 1;
 	shell->line = NULL;
 	*token = NULL;
-	i = 0;
-	while (envp[i])
-	{
-		eq_pos = ft_strchr(envp[i], '=');
-		if (eq_pos)
-		{
-			key = ft_substr(envp[i], 0, eq_pos - envp[i]);
-			value = ft_strdup(eq_pos + 1);
-			add_env(&(shell->env_list), key, value);
-			free(key);
-			free(value);
-		}
-		i++;
-	}
+	init_env_list(shell, envp);
 	setup_signals();
 }

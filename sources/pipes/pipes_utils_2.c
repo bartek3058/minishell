@@ -22,17 +22,22 @@ void	setup_pipe_redirections(int **pipes, int cmd_index, int pipe_count)
 	close_all_pipes(pipes, pipe_count);
 }
 
-void	execute_child_command(t_command *cmd, t_minishell *shell, t_token **token, char **args)
+void	execute_child_command(t_command *cmd, t_minishell *shell,
+		t_token **token, char **args)
 {
-	char	*path;
-	char	**envp;
+	char		*path;
+	char		**envp;
+	t_fork_ctx	ctx;
 
+	ctx.shell = shell;
+	ctx.args = cmd->args;
+	ctx.token = token;
 	if (setup_redirections(cmd) < 0)
 		exit(1);
 	envp = conv_env_to_array(shell->env_list);
 	if (is_builtin(cmd->args[0]))
 	{
-		ft_builtins(shell, cmd->args, cmd, token, args);
+		ft_builtins(&ctx, cmd, args);
 		exit(shell->exit_status);
 	}
 	path = check_path(cmd->args[0]);
@@ -48,7 +53,7 @@ void	execute_child_command(t_command *cmd, t_minishell *shell, t_token **token, 
 // Process managememnt functions
 
 pid_t	*fork_all_processes(t_command *start_cmd, int **pipes,
-		int pipe_count, t_minishell *shell, t_token **token, char **args)
+		int pipe_count, t_fork_ctx *ctx)
 {
 	pid_t		*pids;
 	t_command	*current;
@@ -65,7 +70,7 @@ pid_t	*fork_all_processes(t_command *start_cmd, int **pipes,
 		if (pids[i] == 0)
 		{
 			setup_pipe_redirections(pipes, i, pipe_count);
-			execute_child_command(current, shell, token, args);
+			execute_child_command(current, ctx->shell, ctx->token, ctx->args);
 		}
 		current = current->next;
 		i++;

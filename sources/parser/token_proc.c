@@ -39,103 +39,7 @@ t_command	*create_new_command(void)
 	cmd->pid = 0;
 	return (cmd);
 }
-// static void add_args_to_command(t_command *cmd, t_token **token, t_minishell *shell)
-// {
-// 	int		arg_count;
-// 	t_token	*current;
-// 	t_token	*prev;
-// 	int		i;
 
-// 	arg_count = 0;
-// 	current = *token;
-// 	prev = NULL;
-
-// 	// First pass: Count ONLY actual command arguments
-// 	while (current)
-// 	{
-// 		if(ft_strcmp(current->type, "WORD") == 0 ||
-// 			ft_strcmp(current->type, "VAR_WORD") == 0 ||
-// 			is_builtin(current->type))
-// 		{
-// 			if (prev && 
-// 				(ft_strcmp(prev->type, "<") == 0 ||
-// 				ft_strcmp(prev->type, ">") == 0 ||
-// 				ft_strcmp(prev->type, ">>") == 0 ||
-// 				ft_strcmp(prev->type, "<<") == 0))
-// 					{
-// 						//skip this WORD - it's a redirection target
-// 					}
-// 			else
-// 				arg_count++;
-// 		}
-// 		else if (ft_strcmp(current->type, "|") == 0 ||
-// 				ft_strcmp(current->type, "&&") == 0 ||
-// 				ft_strcmp(current->type, "||") == 0)
-// 					break; //Stop at pipe and logicals - new command starts
-// 		prev = current;
-// 		current = current->next;
-// 	}
-// 	// Allocate and fill
-// 	cmd->args = malloc(sizeof(char *) * (arg_count + 1));
-// 	if (!cmd->args){
-// 		free(cmd);
-// 		return;
-// 	}
-// 	// Second pass: collect actual arguments, skip redir targets
-// 	current = *token;
-// 	prev = NULL;
-// 	i = 0;
-// 	while (current)
-// 	{ 
-// 		if (ft_strcmp(current->type, "WORD") == 0 && current->value)
-// 		{
-// 			if (prev &&
-// 				(ft_strcmp(prev->type, "<") == 0 ||
-// 				 ft_strcmp(prev->type, ">") == 0 ||
-// 				 ft_strcmp(prev->type, ">>") == 0 ||
-// 				 ft_strcmp(prev->type, "<<") == 0))
-// 			{
-// 				// Skip
-// 			}
-// 			else
-// 				cmd->args[i++] = ft_strdup(current->value);
-// 		}
-// 		else if (ft_strcmp(current->type, "VAR_WORD") == 0 && current->value)
-// 		{
-// 			if (prev &&
-// 				(ft_strcmp(prev->type, "<") == 0 ||
-// 				 ft_strcmp(prev->type, ">") == 0 ||
-// 				 ft_strcmp(prev->type, ">>") == 0 ||
-// 				 ft_strcmp(prev->type, "<<") == 0))
-// 			{
-// 				// Skip
-// 			}
-// 			else
-// 				cmd->args[i++] = expand_variables(current->value, shell);
-// 		}
-// 		else if (is_builtin(current->type))
-// 			cmd->args[i++] = ft_strdup(current->type);
-// 		else if (ft_strcmp(current->type, "|") == 0 ||
-// 				 ft_strcmp(current->type, "&&") == 0 ||
-// 				 ft_strcmp(current->type, "||") == 0)
-// 		{
-// 			// Stop at pipe/logical operators
-// 			break;
-// 		}
-// 		prev = current;
-// 		current = current->next;
-// 	}
-// 	cmd->args[i] = NULL;
-// 	*token = current;
-// 	//DEBUG
-// 	printf("DEBUG: Creating command with %d arguments:\n", arg_count);
-// 	for (int j = 0; cmd->args[j]; j++)
-// 		printf("  arg[%d] = '%s'\n", j, cmd->args[j]);
-// 	printf("DEBUG: Input file = '%s'\n", cmd->input_file ? cmd->input_file : "NULL");
-// 	printf("DEBUG: Has next command = %s\n", cmd->next ? "YES" : "NO");
-// 	//END DEBUG
-
-// }
 void	handle_redirection(t_command *cmd, t_token **token)
 {
 	t_token	*current;
@@ -178,19 +82,6 @@ static t_token	*handle_command_token(t_command *cmd, t_token *token,
 	cmd->args[i + 1] = NULL;
 	return (token->next);
 }
-
-// static t_token *process_single_token(t_command *current_cmd, t_token *token, t_minishell *shell)
-// {
-//     if (is_command_token(token))
-//         return handle_command_token(current_cmd, token, shell);
-//     else if (is_redirection_token(token))
-//         return handle_redirection_token(current_cmd, token);
-//     else if (is_operator_token(token))
-//         return handle_operator_token(current_cmd, token);
-//     else
-//         return token->next;
-// }
-
 
 t_command	*parse_command_chain(t_token *tokens, t_minishell *shell)
 {

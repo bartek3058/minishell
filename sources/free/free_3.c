@@ -14,13 +14,13 @@
 
 void	free_output_files(t_command *cmd_list)
 {
-	t_command *current;
-	int i;
-	
+	t_command	*current;
+	int			i;
+
 	current = cmd_list;
 	if (!current->output_files)
-		return;
-	i=0;
+		return ;
+	i = 0;
 	while (i < current->output_file_count)
 		free(current->output_files[i++]);
 	free(current->output_files);
@@ -28,13 +28,13 @@ void	free_output_files(t_command *cmd_list)
 
 void	free_input_files(t_command *cmd_list)
 {
-	t_command *current;
-	int i;
-	
+	t_command	*current;
+	int			i;
+
 	current = cmd_list;
 	if (!current->input_files)
-		return;
-	i=0;
+		return ;
+	i = 0;
 	while (i < current->input_file_count)
 		free(current->input_files[i++]);
 	free(current->input_files);
@@ -42,15 +42,14 @@ void	free_input_files(t_command *cmd_list)
 
 void	free_append_files(t_command *cmd_list)
 {
-	t_command *current;
-	int i;
-	
+	t_command	*current;
+	int			i;
+
 	current = cmd_list;
 	if (!current->append_files)
-		return;
-	i=0;
+		return ;
+	i = 0;
 	while (i < current->append_file_count)
 		free(current->append_files[i++]);
 	free(current->append_files);
 }
-

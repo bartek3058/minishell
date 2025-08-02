@@ -85,11 +85,29 @@ int	execute_cmd(char *path, char **args, t_env *env_list)
 	return (0);
 }
 
-void	execute_child_process(t_minishell *shell, t_command *cmd, t_token **token, char **args)
+static void	handle_execve_failure(t_fork_ctx *ctx, t_command *cmd,
+			char *path, char **envp)
 {
-	char	*path;
-	char	**envp;
+	perror("execve");
+	free_command_list(cmd);
+	free_env(ctx->shell->env_list);
+	free_tokens(*(ctx->token));
+	free_args(ctx->args);
+	free_args(envp);
+	free(path);
+	exit(EXIT_FAILURE);
+}
 
+void	execute_child_process(t_minishell *shell, t_command *cmd,
+	t_token **token, char **args)
+{
+	char		*path;
+	char		**envp;
+	t_fork_ctx	ctx;
+
+	ctx.shell = shell;
+	ctx.token = token;
+	ctx.args = args;
 	if (setup_redirections(cmd) < 0)
 		exit(1);
 	path = check_path(cmd->args[0]);
@@ -104,14 +122,5 @@ void	execute_child_process(t_minishell *shell, t_command *cmd, t_token **token, 
 	}
 	envp = conv_env_to_array(shell->env_list);
 	if (execve(path, cmd->args, envp) == -1)
-	{
-		perror("execve");
-		free_command_list(cmd);
-		free_env(shell->env_list);
-		free_tokens(*token);
-		free_args(args);
-		free_args(envp);
-		free(path);
-		exit(EXIT_FAILURE);
-	}
+		handle_execve_failure(&ctx, cmd, path, envp);
 }

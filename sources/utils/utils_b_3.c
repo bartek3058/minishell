@@ -41,7 +41,8 @@ char	*search_in_paths(char **paths, char *cmd)
 	return (NULL);
 }
 
-static int	fork_and_execute(t_minishell *shell, t_command *cmd, t_token **token, char **args)
+static int	fork_and_execute(t_minishell *shell, t_command *cmd,
+		t_token **token, char **args)
 {
 	pid_t	pid;
 	int		status;
@@ -66,13 +67,19 @@ static int	fork_and_execute(t_minishell *shell, t_command *cmd, t_token **token,
 	}
 }
 
-int	execute_command(t_minishell *shell, t_command *cmd, t_token **token, char **args)
+int	execute_command(t_minishell *shell, t_command *cmd,
+		t_token **token, char **args)
 {
+	t_fork_ctx	ctx;
+
+	ctx.shell = shell;
+	ctx.args = cmd->args;
+	ctx.token = token;
 	if (!cmd || !cmd->args || !cmd->args[0])
 		return (1);
 	if (is_builtin(cmd->args[0]))
 	{
-		ft_builtins(shell, cmd->args, cmd, token, args);
+		ft_builtins(&ctx, cmd, args);
 		return (shell->exit_status);
 	}
 	return (fork_and_execute(shell, cmd, token, args));

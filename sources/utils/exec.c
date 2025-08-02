@@ -48,6 +48,7 @@ t_command	*handle_logical_operators(t_command *current, int exit_status)
 	else
 		return (current->next);
 }
+
 // pipe sequence helpers
 t_command	*skip_pipe_sequence(t_command *current)
 {

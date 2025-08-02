@@ -65,33 +65,20 @@ int	ft_unset(t_env **env_list, char **args)
 
 char	*strip_quotes(const char *str)
 {
-	size_t	i;
-	size_t	j;
-	char	*res;
-	char	quote;
+	t_strip_ctx	ctx;
 
 	if (!str)
 		return (NULL);
-	res = malloc(ft_strlen(str) + 1);
-	if (!res)
+	ctx.str = str;
+	ctx.res = malloc(ft_strlen(str) + 1);
+	if (!ctx.res)
 		return (NULL);
-	i = 0;
-	j = 0;
-	quote = 0;
-	while (str[i])
-	{
-		if (!quote && (str[i] == '\'' || str[i] == '"'))
-			quote = str[i++];
-		else if (quote && str[i] == quote)
-		{
-			quote = 0;
-			i++;
-		}
-		else
-			res[j++] = str[i++];
-	}
-	res[j] = '\0';
-	return (res);
+	ctx.i = 0;
+	ctx.j = 0;
+	ctx.quote = 0;
+	process_strip_quotes(&ctx);
+	ctx.res[ctx.j] = '\0';
+	return (ctx.res);
 }
 
 int	ft_export(t_minishell *shell, char **args)

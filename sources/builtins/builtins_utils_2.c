@@ -37,3 +37,42 @@ int	ft_cd(char **args)
 	}
 	return (0);
 }
+
+int	get_exit_code(t_fork_ctx *ctx)
+{
+	if (!validate_numeric_arg(ctx->args[1]))
+	{
+		return_error("exit", ctx->args[1], "numeric argument required");
+		free_env(ctx->shell->env_list);
+		ctx->shell->env_list = NULL;
+		exit(2);
+	}
+	return (parse_exit_code(ctx->args[1]));
+}
+
+void	cleanup_and_exit(t_fork_ctx *ctx, t_command *cmd, char **argv, int code)
+{
+	free_env(ctx->shell->env_list);
+	ctx->shell->env_list = NULL;
+	free_command_list(cmd);
+	free_args(argv);
+	free_tokens(*(ctx->token));
+	exit(code);
+}
+
+void	process_strip_quotes(t_strip_ctx *ctx)
+{
+	while (ctx->str[ctx->i])
+	{
+		if (!ctx->quote && (ctx->str[ctx->i] == '\''
+				|| ctx->str[ctx->i] == '"'))
+			ctx->quote = ctx->str[(ctx->i)++];
+		else if (ctx->quote && ctx->str[ctx->i] == ctx->quote)
+		{
+			ctx->quote = 0;
+			(ctx->i)++;
+		}
+		else
+			ctx->res[(ctx->j)++] = ctx->str[(ctx->i)++];
+	}
+}

@@ -36,7 +36,7 @@ int	ft_echo(char **args)
 	return (0);
 }
 
-static int	parse_exit_code(const char *str)
+int	parse_exit_code(const char *str)
 {
 	int		result;
 	char	*stripped;
@@ -49,36 +49,22 @@ static int	parse_exit_code(const char *str)
 	return (result & 255);
 }
 
-void	ft_exit(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv)
+void	ft_exit(t_fork_ctx *ctx, t_command *cmd, char **argv)
 {
-	int		arg_count;
-	int		exit_code;
+	int	arg_count;
+	int	exit_code;
 
-	arg_count = count_args(args);
+	arg_count = count_args(ctx->args);
 	if (arg_count > 1)
 	{
-		shell->exit_status = return_error("cd", "", "too many arguments");
+		ctx->shell->exit_status = return_error("cd", "", "too many arguments");
 		return ;
 	}
 	if (arg_count == 0)
-		exit_code = shell->exit_status;
+		exit_code = ctx->shell->exit_status;
 	else
-	{
-		if (!validate_numeric_arg(args[1]))
-		{
-			return_error("exit", args[1], "numeric argument required");
-			free_env(shell->env_list);
-			shell->env_list = NULL;
-			exit(2);
-		}
-		exit_code = parse_exit_code(args[1]);
-	}
-	free_env(shell->env_list);
-	shell->env_list = NULL;
-	free_command_list(cmd);
-	free_args(argv);
-	free_tokens(*token);
-	exit(exit_code);
+		exit_code = get_exit_code(ctx);
+	cleanup_and_exit(ctx, cmd, argv, exit_code);
 }
 
 void	ft_pwd(void)
@@ -91,9 +77,9 @@ void	ft_pwd(void)
 		perror("getcwd() error");
 }
 
-void	ft_builtins(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv)
+void	ft_builtins(t_fork_ctx *ctx, t_command *cmd, char **argv)
 {
-	if (!args || !args[0])
+	if (!ctx->args || !ctx->args[0])
 		return ;
-	ft_builtins_part1(shell, args, cmd, token, argv);
+	ft_builtins_part1(ctx, cmd, argv);
 }

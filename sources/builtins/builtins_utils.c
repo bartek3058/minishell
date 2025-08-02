@@ -71,27 +71,29 @@ int	export_without_equal(t_minishell *shell, char *arg)
 	return (0);
 }
 
-void	ft_builtins_part1(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv)
+void	ft_builtins_part1(t_fork_ctx *ctx, t_command *cmd, char **argv)
 {
 	int	exit_code;
 
-	if (ft_strcmp(args[0], "pwd") == 0)
+	if (!ctx || !ctx->args || !ctx->args[0])
+		return ;
+	if (ft_strcmp(ctx->args[0], "pwd") == 0)
 		ft_pwd();
-	else if (ft_strcmp(args[0], "exit") == 0)
-		ft_exit(shell, args, cmd, token, argv);
-	else if (ft_strcmp(args[0], "echo") == 0)
+	else if (ft_strcmp(ctx->args[0], "exit") == 0)
+		ft_exit(ctx, cmd, argv);
+	else if (ft_strcmp(ctx->args[0], "echo") == 0)
 	{
-		exit_code = ft_echo(args);
-		if (shell)
-			shell->exit_status = exit_code;
+		exit_code = ft_echo(ctx->args);
+		if (ctx->shell)
+			ctx->shell->exit_status = exit_code;
 	}
-	else if (ft_strcmp(args[0], "cd") == 0)
+	else if (ft_strcmp(ctx->args[0], "cd") == 0)
 	{
-		if (shell)
-			shell->exit_status = ft_cd(args);
+		if (ctx->shell)
+			ctx->shell->exit_status = ft_cd(ctx->args);
 	}
 	else
-		ft_builtins_part2(shell, args);
+		ft_builtins_part2(ctx->shell, ctx->args);
 }
 
 void	ft_builtins_part2(t_minishell *shell, char **args)

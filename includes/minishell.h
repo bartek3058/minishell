@@ -86,6 +86,28 @@ typedef struct s_expctx
 	t_minishell		*shell;
 }	t_expctx;
 
+typedef struct s_fork_ctx
+{
+	t_minishell	*shell;
+	t_token		**token;
+	char		**args;
+}	t_fork_ctx;
+
+typedef struct s_pipe_ctx
+{
+	t_token	**token;
+	char	**args;
+	char	**envp;
+}	t_pipe_ctx;
+
+typedef struct s_strip_ctx
+{
+	const char	*str;
+	char		*res;
+	size_t		i;
+	size_t		j;
+	char		quote;
+}	t_strip_ctx;
 
 int			main(int argc, char **argv, char **envp);
 void		minishell_loop(t_minishell *shell, char **args, t_token **token);
@@ -110,7 +132,7 @@ char		*ft_strjoin(char const *s1, char const *s2);
 //built-ins
 int			ft_cd(char **args);
 int			ft_echo(char **args);
-void	ft_exit(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv);
+void		ft_exit(t_fork_ctx *ctx, t_command *cmd, char **argv);
 void		ft_pwd(void);
 int			ft_env(t_env *env);
 int			ft_unset(t_env **env_list, char **args);
@@ -118,51 +140,60 @@ int			ft_export(t_minishell *shell, char **args);
 char		*strip_quotes(const char *str);
 void		remove_env_node(t_env **env_list, char *key);
 int			handle_export_with_value(t_minishell *shell, char *arg);
-int	handle_export_without_value(t_minishell *shell, char *arg);
-int	export_with_equal(t_minishell *shell, char *arg);
-int	export_without_equal(t_minishell *shell, char *arg);
-void	ft_builtins_part1(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv);
-void	ft_builtins_part2(t_minishell *shell, char **args);
-void	ft_builtins(t_minishell *shell, char **args, t_command *cmd, t_token **token, char **argv);
-
+int			handle_export_without_value(t_minishell *shell, char *arg);
+int			export_with_equal(t_minishell *shell, char *arg);
+int			export_without_equal(t_minishell *shell, char *arg);
+void		ft_builtins_part1(t_fork_ctx *ctx, t_command *cmd, char **argv);
+void		ft_builtins_part2(t_minishell *shell, char **args);
+void		ft_builtins(t_fork_ctx *ctx, t_command *cmd, char **argv);
+int			get_exit_code(t_fork_ctx *ctx);
+int			parse_exit_code(const char *str);
+void		process_strip_quotes(t_strip_ctx *ctx);
+void		cleanup_and_exit(t_fork_ctx *ctx, t_command *cmd,
+				char **argv, int code);
 //redirections
 int			ft_input_redirection(t_command *cmd);
 int			ft_output_redirection(t_command *cmd);
 int			ft_append_redirection(t_command *cmd);
 void		ft_heredoc_redirection(t_command *cmd);
-int	open_and_truncate_outputs(t_command *cmd, int *last_fd);
-int	dup_last_output(int fd);
-void	write_heredoc_to_tmp(char *delimiter);
-void	redirect_heredoc_input(void);
-int	dup_last_input(int fd);
-int	open_all_input_files(t_command *cmd, int *last_fd);
-int	open_all_append_files(t_command *cmd, int *last_fd);
-int	dup_last_append_fd(int fd);
+int			open_and_truncate_outputs(t_command *cmd, int *last_fd);
+int			dup_last_output(int fd);
+void		write_heredoc_to_tmp(char *delimiter);
+void		redirect_heredoc_input(void);
+int			dup_last_input(int fd);
+int			open_all_input_files(t_command *cmd, int *last_fd);
+int			open_all_append_files(t_command *cmd, int *last_fd);
+int			dup_last_append_fd(int fd);
 
 //pipes
-void	ft_execute_pipe(t_minishell *shell, t_command *cmd1, t_command *cmd2, t_token **token, char **args);
-void	ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd, t_token **token, char **args);
-void	ft_pipe_child(int pipefd[2], int is_first_cmd,
-		t_command *cmd, char **envp, t_token **token, char **args);
-void close_all_pipes(int **pipes, int pipe_count);
-void	ft_close_pipes(int *pipefd);
-int count_pipe_commands(t_command *start_cmd);
-int	**create_pipes(int pipe_count);
+void		ft_execute_pipe(t_minishell *shell, t_command *cmd1,
+				t_command *cmd2, t_pipe_ctx *ctx);
+void		ft_execute_multiple_pipes(t_minishell *shell, t_command *start_cmd,
+				t_token **token, char **args);
+void		ft_pipe_child(int pipefd[2], int is_first_cmd,
+				t_command *cmd, t_pipe_ctx *ctx);
+void		close_all_pipes(int **pipes, int pipe_count);
+void		ft_close_pipes(int *pipefd);
+int			count_pipe_commands(t_command *start_cmd);
+int			**create_pipes(int pipe_count);
 void		free_pipes(int **pipes, int pipe_count);
-void setup_pipe_redirections(int **pipes, int cmd_index, int pipe_count);
-void	execute_child_command(t_command *cmd, t_minishell *shell, t_token **token, char **args);
-pid_t	*fork_all_processes(t_command *start_cmd, int **pipes,
-		int pipe_count, t_minishell *shell, t_token **token, char **args);
+void		setup_pipe_redirections(int **pipes, int cmd_index, int pipe_count);
+void		execute_child_command(t_command *cmd, t_minishell *shell,
+				t_token **token, char **args);
+pid_t		*fork_all_processes(t_command *start_cmd, int **pipes,
+				int pipe_count, t_fork_ctx *ctx);
 void		wait_for_children(pid_t *pids, int pipe_count, t_minishell *shell);
-void	ft_pipe_redirection(int *pipefd, int is_first_cmd);
+void		ft_pipe_redirection(int *pipefd, int is_first_cmd);
 //exec
-int	execute_command_chain(t_minishell *shell, t_command *cmd_list, t_token **token, char **args);
+int			execute_command_chain(t_minishell *shell, t_command *cmd_list,
+				t_token **token, char **args);
 int			setup_redirections(t_command *cmd);
 
 //utils_t
 int			execute_cmd(char *path, char **args, t_env *env_list);
 					// wykonuje polecenie
-int	execute_command(t_minishell *shell, t_command *cmd, t_token **token, char **args);
+int			execute_command(t_minishell *shell, t_command *cmd,
+				t_token **token, char **args);
 					// sprawdza czy polecenie jest wbudowane i je wykonuje
 char		*check_path(char *cmd);			// sprawdza sciezke do polecenia
 int			is_builtin(char *cmd);
@@ -190,18 +221,22 @@ int			is_redirect_or_pipe(char *arg);
 void		print_tokens(t_token *token);
 			// wypisuje liste tokenow do konsoli (debugging)
 int			count_args(char **args);
-int	exec_builtin_command(t_minishell *shell, t_command *cmd, t_token **token, char **args);
-int	execute_single_command(t_minishell *shell, t_command *cmd, t_token **token, char **args);
-int	execute_pipe_sequence(t_minishell *shell, t_command *start_cmd, t_token **token, char **args);
-int	count_pipe_commands_2(t_command *start_cmd);
-t_command *skip_pipe_sequence(t_command *current);
-t_command *handle_logical_operators(t_command *current, int exit_status);
-t_command *handle_or_operator(t_command *current, int exit_status);
-t_command *handle_and_operator(t_command *current, int exit_status);
-int	handle_env_entry(t_env *current, char **arr, int i);
-int	fill_env_array(t_env *env, char **arr);
-int	count_tokens_2(t_token *token);
-void	fill_args_array(char **args, t_token *token);
+int			exec_builtin_command(t_minishell *shell, t_command *cmd,
+				t_token **token, char **argv);
+int			execute_single_command(t_minishell *shell, t_command *cmd,
+				t_token **token, char **args);
+int			execute_pipe_sequence(t_minishell *shell, t_command *start_cmd,
+				t_token **token, char **args);
+int			count_pipe_commands_2(t_command *start_cmd);
+t_command	*skip_pipe_sequence(t_command *current);
+t_command	*handle_logical_operators(t_command *current, int exit_status);
+t_command	*handle_or_operator(t_command *current, int exit_status);
+t_command	*handle_and_operator(t_command *current, int exit_status);
+int			handle_env_entry(t_env *current, char **arr, int i);
+int			fill_env_array(t_env *env, char **arr);
+int			count_tokens_2(t_token *token);
+void		fill_args_array(char **args, t_token *token);
+void		init_env_list(t_minishell *shell, char **envp);
 
 //clean-up
 void		free_args(char **args);// zwalnia pamiec po tablicy argumentow
@@ -212,15 +247,12 @@ void		free_tokens(t_token *token);
 				// zwalnia pamięc po linked liście z tokenami
 void		cleanup_and_return(char **args, char *line, t_token *token);
 				// zwalnia pamiec po args, linii i tokenach
-void	free_command(t_command *cmd);
-void	free_str_array(char **arr);
-void	free_command_list_2(t_command *cmd_list);
-void	free_input_files(t_command *cmd_list);
-void	free_output_files(t_command *cmd_list);
-void	free_append_files(t_command *cmd_list);
-
-
-
+void		free_command(t_command *cmd);
+void		free_str_array(char **arr);
+void		free_command_list_2(t_command *cmd_list);
+void		free_input_files(t_command *cmd_list);
+void		free_output_files(t_command *cmd_list);
+void		free_append_files(t_command *cmd_list);
 
 //parser
 t_command	*parse_command_chain(t_token *tokens, t_minishell *shell);
@@ -230,33 +262,39 @@ t_command	*parse_command_chain(t_token *tokens, t_minishell *shell);
 // char		*redirect_double_input_helper(char **argv);
 void		add_token(t_token **head, char *key, char *value);
 void		tokenize_input(char **args, t_token **token);
-int			skip_spaces(char *str,int i);
-void	handle_redirect_token(t_token **token, char **args, int *i, int redirect_len);
-void	handle_operator_token_2(t_token **token, char **args, int *i);
-void	add_redirection_token(t_token **token, char **args, int *i, char *type);
-int	is_command_token(t_token *token);
-int	is_redirection_token(t_token *token);
-int	is_operator_token(t_token *token);
-t_token	*handle_redirection_token(t_command *cmd, t_token *token);
-t_token	*handle_operator_token(t_command *current_cmd, t_token *token);
-t_token	*handle_pipe_operator(t_command *current_cmd, t_token *token);
-t_token	*handle_logical_and(t_command *current_cmd, t_token *token);
-t_token	*handle_logical_or(t_command *current_cmd, t_token *token);
-void	handle_redirection(t_command *cmd, t_token **token);
-void	handle_heredoc_redirection(t_command *cmd, t_token **token);
-void	handle_append_redirection(t_command *cmd, t_token **token);
-void	handle_output_redirection(t_command *cmd, t_token **token);
-void	handle_input_redirection(t_command *cmd, t_token **token);
-void init_command_node(t_command **cmd_list, t_command **current_cmd, t_command **last_cmd);
+int			skip_spaces(char *str, int i);
+void		handle_redirect_token(t_token **token, char **args,
+				int *i, int redirect_len);
+void		handle_operator_token_2(t_token **token, char **args, int *i);
+void		add_redirection_token(t_token **token, char **args,
+				int *i, char *type);
+int			is_command_token(t_token *token);
+int			is_redirection_token(t_token *token);
+int			is_operator_token(t_token *token);
+t_token		*handle_redirection_token(t_command *cmd, t_token *token);
+t_token		*handle_operator_token(t_command *current_cmd, t_token *token);
+t_token		*handle_pipe_operator(t_command *current_cmd, t_token *token);
+t_token		*handle_logical_and(t_command *current_cmd, t_token *token);
+t_token		*handle_logical_or(t_command *current_cmd, t_token *token);
+void		handle_redirection(t_command *cmd, t_token **token);
+void		handle_heredoc_redirection(t_command *cmd, t_token **token);
+void		handle_append_redirection(t_command *cmd, t_token **token);
+void		handle_output_redirection(t_command *cmd, t_token **token);
+void		handle_input_redirection(t_command *cmd, t_token **token);
+void		init_command_node(t_command **cmd_list,
+				t_command **current_cmd, t_command **last_cmd);
 t_command	*parse_command_chain(t_token *tokens, t_minishell *shell);
-void	handle_pipe_token(t_command **current_cmd, t_command **last_cmd, t_token **token);
-void	handle_operator_and_reset(t_command **current_cmd, t_command **last_cmd, t_token **token);
-void child_process_exec(char *path, char **args, char **envp);
-char *search_in_paths(char **paths, char *cmd);
-void	execute_child_process(t_minishell *shell, t_command *cmd, t_token **token, char **args);
+void		handle_pipe_token(t_command **current_cmd,
+				t_command **last_cmd, t_token **token);
+void		handle_operator_and_reset(t_command **current_cmd,
+				t_command **last_cmd, t_token **token);
+void		child_process_exec(char *path, char **args, char **envp);
+char		*search_in_paths(char **paths, char *cmd);
+int			expand_exit_status(char *res, int j, t_minishell *shell);
+void		execute_child_process(t_minishell *shell, t_command *cmd,
+				t_token **token, char **args);
 // expansion
 char		*expand_variables(char *str, t_minishell *shell);
-
 
 //smart split
 char		**smart_split(char *str);
