@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansion.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: brogalsk <brogalsk@student.42warsaw.p      +#+  +:+       +#+        */
+/*   By: tszymans <tszymans@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/29 17:49:27 by brogalsk          #+#    #+#             */
-/*   Updated: 2025/07/29 18:27:42 by brogalsk         ###   ########.fr       */
+/*   Updated: 2025/08/02 16:34:00 by tszymans         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,5 +110,6 @@ char	*expand_variables(char *str, t_minishell *shell)
 			ctx.result[ctx.j++] = ctx.str[ctx.i++];
 	}
 	ctx.result[ctx.j] = '\0';
+	ctx.result = strip_quotes(ctx.result);
 	return (ctx.result);
 }
